@@ -1,0 +1,327 @@
+﻿<Window x:Class="WebVulnScanner.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:WebVulnScanner.Desktop.Converters"
+        mc:Ignorable="d"
+        Title="Web Vulnerability Scanner - Professional Edition"
+        Height="800" Width="1400"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <conv:SeverityColorConverter x:Key="SeverityConverter"/>
+
+        <SolidColorBrush x:Key="BrushBackground" Color="#0F172A"/>
+        <SolidColorBrush x:Key="BrushSurface" Color="#111827"/>
+        <SolidColorBrush x:Key="BrushSurfaceAlt" Color="#1F2937"/>
+        <SolidColorBrush x:Key="BrushBorder" Color="#334155"/>
+        <SolidColorBrush x:Key="BrushTextPrimary" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="BrushTextSecondary" Color="#E2E8F0"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
+        </Style>
+
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="4"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}"/>
+            <Setter Property="Background" Value="{StaticResource BrushSurfaceAlt}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Margin" Value="4,0,4,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#000000"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="#38BDF8"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="#334155"/>
+                    <Setter Property="BorderBrush" Value="#38BDF8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="{StaticResource BrushSurface}"/>
+            <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#243244"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#1B2533"/>
+            <Setter Property="RowBackground" Value="#0F1A2E"/>
+            <Setter Property="AlternatingRowBackground" Value="#111F36"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{StaticResource BrushSurfaceAlt}"/>
+                        <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Height" Value="38"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#0EA5E9"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#0284C7"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#000000"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.55"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="ToggleButton">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#0284C7"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#000000"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1E3A5F"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#0EA5E9"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource BrushSurfaceAlt}"/>
+            <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Padding" Value="18"/>
+            <Setter Property="BorderBrush" Value="#FFFFFF22"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource BrushBackground}">
+        <Border Margin="14" Padding="10" Background="#0B1220" CornerRadius="14" BorderBrush="#1E293B" BorderThickness="1">
+            <TabControl Margin="8">
+            <TabItem Header="Dashboard">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <UniformGrid Columns="4" Margin="6,6,6,12">
+                        <Border Style="{StaticResource StatCardStyle}" Background="#2563EB">
+                            <StackPanel>
+                                <TextBlock Text="TOTAL SCANS" Foreground="White" Opacity="0.8"/>
+                                <TextBlock Text="{Binding TotalScans}" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource StatCardStyle}" Background="#DC2626">
+                            <StackPanel>
+                                <TextBlock Text="CRITICAL RISKS" Foreground="White" Opacity="0.8"/>
+                                <TextBlock Text="{Binding CriticalCount}" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource StatCardStyle}" Background="#D97706">
+                            <StackPanel>
+                                <TextBlock Text="PROXY REQUESTS" Foreground="White" Opacity="0.8"/>
+                                <TextBlock Text="{Binding ProxyRequestCount}" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource StatCardStyle}" Background="#059669">
+                            <StackPanel>
+                                <TextBlock Text="ACTIVE SCANS" Foreground="White" Opacity="0.8"/>
+                                <TextBlock Text="{Binding ActiveScans}" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding RecentScans}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              Margin="6" SelectionChanged="ScansGrid_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding ScanDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="150"/>
+                            <DataGridTextColumn Header="Target" Binding="{Binding TargetUrl}" Width="*"/>
+                            <DataGridTextColumn Header="Pages" Binding="{Binding PagesScanned}" Width="80"/>
+                            <DataGridTextColumn Header="Issues" Binding="{Binding VulnerabilityCount}" Width="80"/>
+                            <DataGridTemplateColumn Header="Risk Score" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ProgressBar Value="{Binding RiskScore}" Maximum="100"
+                                                     Background="{Binding RiskScore, Converter={StaticResource SeverityConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Scanner">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1" CornerRadius="12" Padding="12" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Target URL:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="SemiBold"/>
+                        <TextBox x:Name="txtTarget" Width="500" FontSize="14" Padding="5"
+                                 Text="http://testphp.vulnweb.com"/>
+                        <CheckBox x:Name="chkDeepScan" Content="Deep Scan (Crawl)" Margin="15,0" VerticalAlignment="Center"/>
+                        <Button x:Name="btnScan" Content="Start Scan" Padding="20,5"
+                                Background="#16A34A" Foreground="White" FontWeight="Bold"
+                                Click="BtnScan_Click"/>
+                        <Button Content="Generate Report" Margin="10,0,0,0" Padding="15,5" Background="#0284C7"
+                                Click="BtnReport_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1" CornerRadius="10" Padding="8">
+                        <ProgressBar x:Name="progressScan" Height="20" IsIndeterminate="False"/>
+                    </Border>
+
+                    <DataGrid x:Name="gridVulns" Grid.Row="2" Margin="0,10,0,0" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" Width="100">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Background" Value="{Binding Severity, Converter={StaticResource SeverityConverter}}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="150"/>
+                            <DataGridTextColumn Header="URL" Binding="{Binding Url}" Width="*"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="300"/>
+                            <DataGridTextColumn Header="Remediation" Binding="{Binding Remediation}" Width="250"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Proxy Interceptor">
+                <Grid Margin="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1" CornerRadius="12" Padding="10" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <WrapPanel VerticalAlignment="Center" ItemHeight="36">
+                                <ToggleButton x:Name="btnProxyToggle" Content="Proxy: OFF"
+                                              Click="BtnProxyToggle_Click" Background="#DC2626" Margin="0,0,8,0"/>
+                                <ToggleButton x:Name="btnIntercept" Content="Intercept: ON" IsChecked="True"
+                                              Checked="BtnIntercept_Checked" Unchecked="BtnIntercept_Unchecked" Background="#0284C7" Margin="0,0,8,0"/>
+                                <Button Content="Forward" Click="BtnForward_Click" Background="#16A34A" IsEnabled="{Binding ElementName=btnIntercept, Path=IsChecked}"/>
+                                <Button Content="Drop" Click="BtnDrop_Click" Background="#EA580C" IsEnabled="{Binding ElementName=btnIntercept, Path=IsChecked}"/>
+                                <Button Content="Clear" Click="BtnClearProxy_Click" Background="#475569"/>
+                                <Button Content="Copy" Click="BtnCopyRequest_Click" Background="#0EA5E9"/>
+                            </WrapPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                                <TextBlock Text="Port:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{StaticResource BrushTextSecondary}"/>
+                                <TextBox x:Name="txtProxyPort" Text="8080" Width="70" Margin="0,0,10,0"/>
+                                <TextBlock x:Name="txtProxyStatus" Text="No request selected" VerticalAlignment="Center" Foreground="{StaticResource BrushTextSecondary}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60*"/>
+                            <ColumnDefinition Width="40*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <DataGrid x:Name="gridProxy" Grid.Column="0" Margin="5"
+                                  SelectionChanged="GridProxy_SelectionChanged" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Method" Binding="{Binding Method}" Width="80"/>
+                                <DataGridTextColumn Header="Host" Binding="{Binding Host}" Width="150"/>
+                                <DataGridTextColumn Header="Path" Binding="{Binding Url}" Width="*"/>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Timestamp, StringFormat=HH:mm:ss}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Border Grid.Column="1" Margin="5" Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1" CornerRadius="12" Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Request Editor" FontWeight="Bold" Margin="0,0,0,8" FontSize="14"/>
+                            <TextBox x:Name="txtRequestEditor" Grid.Row="1"
+                                     FontFamily="Consolas" TextWrapping="Wrap"
+                                     AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                                     IsReadOnly="False"/>
+                        </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        </Border>
+    </Grid>
+</Window>
