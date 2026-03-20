@@ -67,6 +67,10 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Titanium.Web.Proxy": {
+              "target": "Package",
+              "version": "[3.2.2-beta, )"
+            },
             "iTextSharp.LGPLv2.Core": {
               "target": "Package",
               "version": "[1.9.0, )"

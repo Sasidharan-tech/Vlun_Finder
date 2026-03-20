@@ -14,6 +14,22 @@
           "WebVulnScanner.Desktop.dll": {}
         }
       },
+      "BouncyCastle.Cryptography/2.0.0": {
+        "runtime": {
+          "lib/net6.0/BouncyCastle.Cryptography.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.20352"
+          }
+        }
+      },
+      "BrotliSharpLib/0.3.3": {
+        "runtime": {
+          "lib/netstandard2.0/BrotliSharpLib.dll": {
+            "assemblyVersion": "0.3.2.0",
+            "fileVersion": "0.3.3.0"
+          }
+        }
+      },
       "HtmlAgilityPack/1.11.54": {
         "runtime": {
           "lib/netstandard2.0/HtmlAgilityPack.dll": {
@@ -671,11 +687,24 @@
           }
         }
       },
+      "Titanium.Web.Proxy/3.2.2-beta": {
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.0.0",
+          "BrotliSharpLib": "0.3.3"
+        },
+        "runtime": {
+          "lib/net6.0/Titanium.Web.Proxy.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        }
+      },
       "WebVulnScanner.Core/1.0.0": {
         "dependencies": {
           "HtmlAgilityPack": "1.11.54",
           "Microsoft.EntityFrameworkCore.Sqlite": "8.0.0",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.0",
+          "Titanium.Web.Proxy": "3.2.2-beta",
           "iTextSharp.LGPLv2.Core": "1.9.0"
         },
         "runtime": {
@@ -692,6 +721,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "BouncyCastle.Cryptography/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pzHd/gZou2SG4tXQQwXt1oEVJ3ZpmHVa5/Hg0k9QMkdc84HEUBb2DI9ajRlw6TS6dTy/UPZXLjpV9Us5L0SeVA==",
+      "path": "bouncycastle.cryptography/2.0.0",
+      "hashPath": "bouncycastle.cryptography.2.0.0.nupkg.sha512"
+    },
+    "BrotliSharpLib/0.3.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/z74VNg6etlQK/N1mSD5Tz2qQUZqc3RMiuv2F8Q/MOfvg4l7a6lDYhQQTPd9s9saSokh1GqUD7JTuunOiQid8w==",
+      "path": "brotlisharplib/0.3.3",
+      "hashPath": "brotlisharplib.0.3.3.nupkg.sha512"
     },
     "HtmlAgilityPack/1.11.54": {
       "type": "package",
@@ -965,6 +1008,13 @@
       "sha512": "sha512-ryTgF+iFkpGZY1vRQhfCzX0xTdlV3pyaTTqRu2ETbEv+HlV7O6y7hyQURnghNIXvctl5DuZ//Dpks6HdL/Txgw==",
       "path": "system.io.pipelines/6.0.3",
       "hashPath": "system.io.pipelines.6.0.3.nupkg.sha512"
+    },
+    "Titanium.Web.Proxy/3.2.2-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1SibCgmqCWgplOxgOHSaAyHfpqR9Jld1CUTO3Bg8UbkavcuUuP/NMH8Gi9Fhum/9v9A9rvtgOWtSIzuEDvAyGA==",
+      "path": "titanium.web.proxy/3.2.2-beta",
+      "hashPath": "titanium.web.proxy.3.2.2-beta.nupkg.sha512"
     },
     "WebVulnScanner.Core/1.0.0": {
       "type": "project",

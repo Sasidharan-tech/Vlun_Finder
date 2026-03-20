@@ -12,3 +12,4 @@ D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\refint\WebVu
 D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.pdb
 D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.genruntimeconfig.cache
 D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\ref\WebVulnScanner.Core.dll
+D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.sourcelink.json

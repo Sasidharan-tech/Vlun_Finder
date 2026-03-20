@@ -130,3 +130,7 @@ D:\my final year projects\vlun\WebVulnScanner.Desktop\obj\Debug\net8.0-windows\r
 D:\my final year projects\vlun\WebVulnScanner.Desktop\obj\Debug\net8.0-windows\WebVulnScanner.Desktop.pdb
 D:\my final year projects\vlun\WebVulnScanner.Desktop\obj\Debug\net8.0-windows\WebVulnScanner.Desktop.genruntimeconfig.cache
 D:\my final year projects\vlun\WebVulnScanner.Desktop\obj\Debug\net8.0-windows\ref\WebVulnScanner.Desktop.dll
+D:\my final year projects\vlun\WebVulnScanner.Desktop\obj\Debug\net8.0-windows\WebVulnScanner.Desktop.sourcelink.json
+D:\my final year projects\vlun\WebVulnScanner.Desktop\bin\Debug\net8.0-windows\BouncyCastle.Cryptography.dll
+D:\my final year projects\vlun\WebVulnScanner.Desktop\bin\Debug\net8.0-windows\BrotliSharpLib.dll
+D:\my final year projects\vlun\WebVulnScanner.Desktop\bin\Debug\net8.0-windows\Titanium.Web.Proxy.dll

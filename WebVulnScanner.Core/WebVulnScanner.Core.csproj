@@ -12,6 +12,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.9.0" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+    <PackageReference Include="Titanium.Web.Proxy" Version="3.2.2-beta" />
   </ItemGroup>
 
 </Project>
