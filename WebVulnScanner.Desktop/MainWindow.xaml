@@ -621,6 +621,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -683,7 +684,75 @@
                         </Grid>
                     </Border>
 
-                    <Grid Grid.Row="2">
+                    <Border x:Name="riskResultBorder" Grid.Row="2" Visibility="Collapsed"
+                            Background="#051A0A" BorderBrush="#16A34A" BorderThickness="1"
+                            CornerRadius="10" Padding="10" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="260"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border x:Name="verdictBadge" Grid.Column="0" CornerRadius="8"
+                                    Background="#0B1220" BorderBrush="#16A34A" BorderThickness="2" Padding="10">
+                                <StackPanel>
+                                    <TextBlock x:Name="txtVerdictIcon" Text="SAFE" FontSize="12" FontWeight="Bold" Foreground="#94A3B8"/>
+                                    <TextBlock x:Name="txtVerdictMain" Text="SAFE" Margin="0,4,0,0" FontSize="22" FontWeight="Bold" Foreground="#F8FAFC"/>
+                                    <TextBlock x:Name="txtVerdictTarget" Text="-" Margin="0,6,0,0" FontWeight="SemiBold" Foreground="#38BDF8"/>
+                                    <TextBlock x:Name="txtVerdictDetail" Margin="0,8,0,0" TextWrapping="Wrap" Foreground="#CBD5E1"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="#0B1220" BorderBrush="#334155" BorderThickness="1" CornerRadius="8" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                        <TextBlock Text="Findings" FontWeight="Bold" Foreground="#F8FAFC"/>
+                                        <ListBox x:Name="listRiskFindings" Margin="0,6,0,0" BorderThickness="0" Background="Transparent" Foreground="#E2E8F0">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="0,0,0,6">
+                                                        <TextBlock Text="{Binding LevelText, StringFormat=• [{0}]}" FontWeight="SemiBold" Foreground="#FCA5A5"/>
+                                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" Foreground="#E2E8F0"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Margin="8,0">
+                                        <TextBlock Text="Safe Points" FontWeight="Bold" Foreground="#F8FAFC"/>
+                                        <ListBox x:Name="listSafePoints" Margin="0,6,0,0" BorderThickness="0" Background="Transparent" Foreground="#86EFAC">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Text="{Binding StringFormat=• {0}}"/>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Margin="8,0,0,0">
+                                        <TextBlock Text="Next Steps" FontWeight="Bold" Foreground="#F8FAFC"/>
+                                        <ListBox x:Name="listNextSteps" Margin="0,6,0,0" BorderThickness="0" Background="Transparent" Foreground="#38BDF8">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Text="{Binding StringFormat=• {0}}"/>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="360"/>
                             <ColumnDefinition Width="6"/>
@@ -749,6 +818,317 @@
                                          VerticalScrollBarVisibility="Auto"
                                          HorizontalScrollBarVisibility="Auto"
                                          TextWrapping="NoWrap"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="OpenVAS">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0"
+                            Background="{StaticResource BrushSurface}"
+                            BorderBrush="{StaticResource BrushBorder}"
+                            BorderThickness="1" CornerRadius="10"
+                            Padding="10" Margin="0,0,0,8">
+                        <WrapPanel ItemHeight="32">
+                            <TextBlock Text="Host:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox x:Name="txtOvasHost" Width="140" Text="127.0.0.1"/>
+
+                            <TextBlock Text="Port:" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                            <TextBox x:Name="txtOvasPort" Width="60" Text="9390"/>
+
+                            <TextBlock Text="User:" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                            <TextBox x:Name="txtOvasUser" Width="80" Text="admin"/>
+
+                            <TextBlock Text="Pass:" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                            <PasswordBox x:Name="pwdOvas" Width="90"/>
+
+                            <Button Content="Test Connection"
+                                    Background="#475569" Margin="10,0,0,0"
+                                    Click="BtnOvasTestConn_Click"/>
+
+                            <Border x:Name="ovasConnBadge"
+                                    CornerRadius="4" Padding="8,3" Margin="8,0,0,0"
+                                    VerticalAlignment="Center" Background="#1E293B">
+                                <TextBlock x:Name="ovasConnStatus"
+                                           Text="Not connected"
+                                           FontSize="11" FontWeight="Bold" Foreground="#CBD5E1"/>
+                            </Border>
+                        </WrapPanel>
+                    </Border>
+
+                    <Border Grid.Row="1"
+                            Background="{StaticResource BrushSurface}"
+                            BorderBrush="{StaticResource BrushBorder}"
+                            BorderThickness="1" CornerRadius="10"
+                            Padding="10" Margin="0,0,0,8">
+                        <WrapPanel ItemHeight="32">
+                            <TextBlock Text="Target:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBox x:Name="txtOvasTarget" Width="220"
+                                     Text="192.168.1.1"
+                                     ToolTip="IP, hostname, or CIDR range (e.g. 192.168.1.0/24)"/>
+
+                            <TextBlock Text="Profile:" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                            <ComboBox x:Name="cmbOvasProfile" Width="220" SelectedIndex="0">
+                                <ComboBoxItem Content="Full and fast (recommended)"/>
+                                <ComboBoxItem Content="Full and fast ultimate"/>
+                                <ComboBoxItem Content="System Discovery"/>
+                                <ComboBoxItem Content="Host Discovery (ping only)"/>
+                            </ComboBox>
+
+                            <TextBlock Text="Task name:" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                            <TextBox x:Name="txtOvasTaskName" Width="160"
+                                     Text="VulnFinder Scan"/>
+
+                            <Button x:Name="btnOvasScan" Content="Start OpenVAS Scan"
+                                    Background="#16A34A" Margin="10,0,0,0"
+                                    Click="BtnOvasScan_Click"/>
+                            <Button x:Name="btnOvasStop" Content="Stop"
+                                    Background="#DC2626" IsEnabled="False"
+                                    Click="BtnOvasStop_Click"/>
+                            <Button Content="Export XML" Background="#0284C7"
+                                    Click="BtnOvasExport_Click"/>
+                        </WrapPanel>
+                    </Border>
+
+                    <Border Grid.Row="2"
+                            Background="{StaticResource BrushSurface}"
+                            BorderBrush="{StaticResource BrushBorder}"
+                            BorderThickness="1" CornerRadius="8"
+                            Padding="8" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <TextBlock x:Name="txtOvasStatus"
+                                           Text="Ready — configure connection and click Start"
+                                           FontSize="12" Foreground="#38BDF8"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock x:Name="txtOvasPercent"
+                                           Text="" FontSize="12" FontWeight="Bold"
+                                           Foreground="#38BDF8" Margin="12,0,0,0"/>
+                            </StackPanel>
+
+                            <ProgressBar x:Name="progressOvas"
+                                         Grid.Row="2" Height="14"
+                                         IsIndeterminate="False" Value="0"/>
+                        </Grid>
+                    </Border>
+
+                    <UniformGrid Grid.Row="3" Columns="5" Margin="0,0,0,8">
+                        <Border Background="#1A0505" CornerRadius="8"
+                                BorderBrush="#7F1D1D" BorderThickness="1"
+                                Padding="10" Margin="0,0,3,0">
+                            <StackPanel>
+                                <TextBlock Text="Critical" FontSize="10" Foreground="#9CA3AF"/>
+                                <TextBlock x:Name="ovasCritCount" Text="0"
+                                           FontSize="26" FontWeight="Bold" Foreground="#DC2626"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#1A0E05" CornerRadius="8"
+                                BorderBrush="#7C2D12" BorderThickness="1"
+                                Padding="10" Margin="2,0,2,0">
+                            <StackPanel>
+                                <TextBlock Text="High" FontSize="10" Foreground="#9CA3AF"/>
+                                <TextBlock x:Name="ovasHighCount" Text="0"
+                                           FontSize="26" FontWeight="Bold" Foreground="#EA580C"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#1A1305" CornerRadius="8"
+                                BorderBrush="#713F12" BorderThickness="1"
+                                Padding="10" Margin="2,0,2,0">
+                            <StackPanel>
+                                <TextBlock Text="Medium" FontSize="10" Foreground="#9CA3AF"/>
+                                <TextBlock x:Name="ovasMedCount" Text="0"
+                                           FontSize="26" FontWeight="Bold" Foreground="#D97706"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#05101A" CornerRadius="8"
+                                BorderBrush="#1E3A5F" BorderThickness="1"
+                                Padding="10" Margin="2,0,2,0">
+                            <StackPanel>
+                                <TextBlock Text="Low" FontSize="10" Foreground="#9CA3AF"/>
+                                <TextBlock x:Name="ovasLowCount" Text="0"
+                                           FontSize="26" FontWeight="Bold" Foreground="#2563EB"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#0A1A0A" CornerRadius="8"
+                                BorderBrush="#14532D" BorderThickness="1"
+                                Padding="10" Margin="3,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Total CVEs" FontSize="10" Foreground="#9CA3AF"/>
+                                <TextBlock x:Name="ovasTotalCount" Text="0"
+                                           FontSize="26" FontWeight="Bold" Foreground="#4ADE80"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="55*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="45*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <DataGrid x:Name="gridOvasResults"
+                                  Grid.Column="0"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  SelectionChanged="GridOvasResults_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Severity" Width="90">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="4" Padding="4,2" Margin="2"
+                                                    Background="{Binding SeverityColor}">
+                                                <TextBlock Text="{Binding SeverityUpper}"
+                                                           Foreground="White" FontSize="10"
+                                                           FontWeight="Bold" TextAlignment="Center"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="CVSS"
+                                                    Binding="{Binding CvssDisplay}"
+                                                    Width="55"/>
+                                <DataGridTextColumn Header="CVE"
+                                                    Binding="{Binding CveId}"
+                                                    Width="130"/>
+                                <DataGridTextColumn Header="Host"
+                                                    Binding="{Binding Host}"
+                                                    Width="120"/>
+                                <DataGridTextColumn Header="Port"
+                                                    Binding="{Binding Port}"
+                                                    Width="70"/>
+                                <DataGridTextColumn Header="Vulnerability"
+                                                    Binding="{Binding Name}"
+                                                    Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <GridSplitter Grid.Column="1" Width="5"
+                                      HorizontalAlignment="Stretch"
+                                      Background="#334155"/>
+
+                        <Border Grid.Column="2"
+                                Background="#080F1C"
+                                BorderBrush="#1E293B"
+                                BorderThickness="1" CornerRadius="12">
+                            <Grid>
+                                <Grid x:Name="ovasEmptyPanel">
+                                    <StackPanel VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Opacity="0.3">
+                                        <TextBlock Text="Select a vulnerability to view details"
+                                                   FontSize="13" Foreground="#334155"
+                                                   TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <ScrollViewer x:Name="ovasDetailPanel"
+                                              Visibility="Collapsed"
+                                              VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="16,14,16,16">
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock x:Name="ovasDetailName"
+                                                       FontSize="16" FontWeight="Bold"
+                                                       Foreground="#F8FAFC" TextWrapping="Wrap"/>
+                                            <TextBlock x:Name="ovasDetailHost"
+                                                       FontSize="12" Foreground="#94A3B8"
+                                                       Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1"
+                                                x:Name="ovasRiskBadge"
+                                                CornerRadius="6" Padding="12,6"
+                                                VerticalAlignment="Top" BorderThickness="1">
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <TextBlock x:Name="ovasRiskLabel"
+                                                           FontSize="13" FontWeight="Bold"
+                                                           Foreground="White" TextAlignment="Center"/>
+                                                <TextBlock x:Name="ovasCvssLabel"
+                                                           FontSize="18" FontWeight="Bold"
+                                                           Foreground="White" TextAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <Rectangle Height="1" Fill="#1E293B" Margin="0,0,0,10"/>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <Border Background="#0F1A0F" CornerRadius="4"
+                                                BorderBrush="#14532D" BorderThickness="1"
+                                                Padding="8,4" Margin="0,0,8,0">
+                                            <TextBlock x:Name="ovasCveId"
+                                                       FontFamily="Consolas" FontSize="12"
+                                                       Foreground="#4ADE80"/>
+                                        </Border>
+                                        <Border Background="#0F0A1A" CornerRadius="4"
+                                                BorderBrush="#312E81" BorderThickness="1"
+                                                Padding="8,4">
+                                            <TextBlock x:Name="ovasFamilyName"
+                                                       FontSize="11" Foreground="#A78BFA"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Border Background="#0F172A" CornerRadius="8"
+                                            BorderBrush="#1E293B" BorderThickness="1"
+                                            Padding="12" Margin="0,0,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="DESCRIPTION" FontSize="10"
+                                                       FontWeight="Bold" Foreground="#38BDF8"
+                                                       Margin="0,0,0,6"/>
+                                            <TextBlock x:Name="ovasDescription"
+                                                       FontSize="12" Foreground="#CBD5E1"
+                                                       TextWrapping="Wrap" LineHeight="20"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Background="#0A0F1A" CornerRadius="8"
+                                            BorderBrush="#1E3A5F" BorderThickness="1"
+                                            Padding="12" Margin="0,0,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="HOW TO FIX" FontSize="10"
+                                                       FontWeight="Bold" Foreground="#38BDF8"
+                                                       Margin="0,0,0,8"/>
+                                            <TextBlock x:Name="ovasSolution"
+                                                       FontSize="12" Foreground="#CBD5E1"
+                                                       TextWrapping="Wrap" LineHeight="20"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Background="#0F0A1A" CornerRadius="8"
+                                            BorderBrush="#312E81" BorderThickness="1"
+                                            Padding="12">
+                                        <StackPanel>
+                                            <TextBlock Text="NVT REFERENCE" FontSize="10"
+                                                       FontWeight="Bold" Foreground="#A78BFA"
+                                                       Margin="0,0,0,6"/>
+                                            <TextBlock x:Name="ovasNvtOid"
+                                                       FontFamily="Consolas" FontSize="11"
+                                                       Foreground="#C4B5FD" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                    </StackPanel>
+                                </ScrollViewer>
                             </Grid>
                         </Border>
                     </Grid>

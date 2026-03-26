@@ -1,0 +1,184 @@
+# OPENVAS INSTALLATION & SETUP GUIDE
+# ════════════════════════════════════════════════════════════
+# Install OpenVAS/GVM so your WPF app can connect to it
+# ════════════════════════════════════════════════════════════
+
+## WHAT IS OPENVAS?
+OpenVAS (Open Vulnerability Assessment System) is now called GVM
+(Greenbone Vulnerability Manager). It has:
+  - 90,000+ vulnerability tests (NVTs)
+  - CVE database integration
+  - CVSS scoring for every finding
+  - Full network scan capability
+  - Free and open source
+
+Your WPF app talks to it via GMP protocol (XML over TLS port 9390).
+
+
+## OPTION 1: Kali Linux (EASIEST — already included)
+
+# Install GVM
+sudo apt update
+sudo apt install -y gvm
+
+# Setup (takes 10-20 min, downloads NVT database)
+sudo gvm-setup
+
+# Start all services
+sudo gvm-start
+
+# Check it's running
+sudo gvm-check-setup
+
+# Default credentials are shown during setup.
+# Usually: admin / (random password shown in output)
+# Save that password — you need it in your WPF app!
+
+
+## OPTION 2: Ubuntu 22.04 / Debian
+
+# Add Greenbone repository
+sudo apt install -y curl gnupg
+curl -O https://www.greenbone.net/GBCommunitySigningKey.asc
+sudo gpg --import GBCommunitySigningKey.asc
+
+# Install
+sudo apt install -y greenbone-vulnerability-manager \
+                    gvmd ospd-openvas openvas-scanner
+
+# Feed update (downloads 90,000+ NVTs — takes time!)
+sudo greenbone-nvt-sync
+sudo greenbone-feed-sync --type GVMD_DATA
+sudo greenbone-feed-sync --type SCAP
+sudo greenbone-feed-sync --type CERT
+
+# Create admin user
+sudo gvmd --create-user=admin --password=YourPassword123
+
+# Start services
+sudo systemctl enable --now gvmd ospd-openvas
+sudo systemctl enable --now gsad  # web interface (optional)
+
+# Verify GVM daemon is listening on port 9390
+sudo netstat -tlnp | grep 9390
+# Should show: tcp 0.0.0.0:9390 LISTEN
+
+
+## OPTION 3: Docker (QUICKEST for testing)
+
+# Pull official Greenbone Community Edition
+docker pull greenbone/community-edition
+
+# Run with docker-compose
+cat > docker-compose.yml << 'EOF'
+version: "3.8"
+services:
+  vulnerability-tests:
+    image: greenbone/vulnerability-tests
+    volumes:
+      - vt_data_vol:/mnt/volumes/openvas
+  notus-data:
+    image: greenbone/notus-data
+    volumes:
+      - notus_data_vol:/mnt/volumes/notus
+  gvmd:
+    image: greenbone/gvmd
+    ports:
+      - "9390:9390"
+    volumes:
+      - gvmd_data_vol:/var/lib/gvm
+    environment:
+      - GVMD_PASSWORD=admin
+    depends_on:
+      - pg-gvm
+  pg-gvm:
+    image: greenbone/pg-gvm
+    volumes:
+      - psql_data_vol:/var/lib/postgresql
+volumes:
+  vt_data_vol:
+  notus_data_vol:
+  gvmd_data_vol:
+  psql_data_vol:
+EOF
+
+docker-compose up -d
+
+# Wait 5 minutes for feeds to download, then connect:
+# Host: 127.0.0.1  Port: 9390  User: admin  Pass: admin
+
+
+## VERIFYING THE CONNECTION
+
+# Test GMP connection manually (Linux):
+echo "<get_version/>" | gvm-cli --gmp-username admin --gmp-password YourPass \
+  socket --sockpath /run/gvmd/gvmd.sock
+
+# Or via TCP:
+openssl s_client -connect 127.0.0.1:9390
+# (then type: <get_version/>)
+# Should respond with XML version info
+
+
+## YOUR WPF APP SETTINGS (once GVM is running)
+
+Host:     127.0.0.1        (or IP of GVM machine)
+Port:     9390
+Username: admin
+Password: (password you set during setup)
+
+Click "Test Connection" — should show "Connected" green badge.
+
+
+## SCAN PROFILES EXPLAINED
+
+"Full and fast"              → Best choice. Tests all common vulnerabilities.
+                               Takes 10-60 min depending on target.
+"Full and fast ultimate"     → Even deeper. Can be intrusive. Hours.
+"System Discovery"           → Finds hosts + services + OS. Fast.
+"Host Discovery"             → Just checks if hosts are up. Very fast.
+
+
+## NETWORK TOPOLOGY (for your understanding)
+
+┌─────────────────┐     GMP/XML     ┌──────────────┐     Scan probes
+│  Your WPF App   │ ──────────────► │  GVM Daemon  │ ──────────────►  Target
+│  (Windows PC)   │ ◄────────────── │  (Linux VM)  │                  192.168.x.x
+│                 │   XML results   │  port 9390   │
+└─────────────────┘                 └──────────────┘
+
+Common setup:
+- GVM runs in WSL2 (Windows Subsystem for Linux) on same machine
+- Or GVM runs in a Kali Linux VM (VMware/VirtualBox)
+- Your WPF app connects to it via 127.0.0.1:9390 (WSL2)
+  or 192.168.x.x:9390 (VM)
+
+
+## WSL2 SETUP (run GVM inside Windows)
+
+# In WSL2 Ubuntu terminal:
+sudo apt update && sudo apt install -y gvm
+sudo gvm-setup
+sudo gvm-start
+
+# In your WPF app:
+# Host: 127.0.0.1  (WSL2 forwards localhost automatically)
+# Port: 9390
+
+
+## COMMON ERRORS
+
+"Connection refused on port 9390"
+→ GVM daemon not running. Run: sudo systemctl start gvmd
+
+"Authentication failed"
+→ Wrong password. Reset: sudo gvmd --create-user=admin --new-password=NewPass
+
+"No scan configs found"
+→ Feeds not downloaded yet. Run: sudo greenbone-nvt-sync
+
+"TLS certificate error"
+→ AcceptAllCerts = true in your OpenVasSettings (already set in the code)
+
+"Scan stuck at 0%"
+→ ospd-openvas not running. Run: sudo systemctl start ospd-openvas

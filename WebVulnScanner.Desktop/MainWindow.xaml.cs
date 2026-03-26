@@ -7,12 +7,15 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WebVulnScanner.Core.Database;
 using WebVulnScanner.Core.Models;
+using WebVulnScanner.Core.OpenVAS;
 using WebVulnScanner.Core.Proxy;
+using WebVulnScanner.Core.RiskDetector;
 using WebVulnScanner.Core.Reports;
 using WebVulnScanner.Core.NmapIntegration;
 using WebVulnScanner.Core.Scanner;
@@ -29,6 +32,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private NmapRunner? _nmapRunner;
     private CancellationTokenSource? _nmapCancellation;
     private readonly ObservableCollection<NmapPortViewModel> _nmapPortItems = new();
+    private OpenVasScanEngine? _ovasEngine;
+    private readonly ObservableCollection<OpenVasResult> _ovasResults = new();
 
     private readonly ObservableCollection<ProxyRequestEntry> _proxyRequests = new();
     private readonly ObservableCollection<ScanViewModel> _scans = new();
@@ -53,8 +58,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         gridProxy.ItemsSource = _proxyRequests;
         InitNmapScannerTab();
+        InitOpenVasTab();
         LoadRecentScans();
         NotifyStatsChanged();
+    }
+
+    private void InitOpenVasTab()
+    {
+        gridOvasResults.ItemsSource = _ovasResults;
     }
 
     private void InitNmapScannerTab()
@@ -83,11 +94,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void CmbAdvNmapProfile_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (txtAdvNmapTarget is null || cmbAdvNmapProfile is null || txtAdvNmapCommand is null)
+        {
+            return;
+        }
+
         UpdateAdvNmapCommandPreview();
     }
 
     private void UpdateAdvNmapCommandPreview()
     {
+        if (txtAdvNmapTarget is null || cmbAdvNmapProfile is null || txtAdvNmapCommand is null)
+        {
+            return;
+        }
+
         var target = string.IsNullOrWhiteSpace(txtAdvNmapTarget.Text) ? "127.0.0.1" : txtAdvNmapTarget.Text.Trim();
         var profile = cmbAdvNmapProfile.SelectedIndex;
 
@@ -120,6 +141,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         txtAdvNmapRawOutput.Clear();
         _nmapPortItems.Clear();
         ResetAdvancedNmapDetails();
+        riskResultBorder.Visibility = Visibility.Collapsed;
 
         _nmapRunner = new NmapRunner();
         _nmapCancellation = new CancellationTokenSource();
@@ -136,6 +158,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 {
                     txtAdvNmapRawOutput.AppendText(line + Environment.NewLine);
                     txtAdvNmapRawOutput.ScrollToEnd();
+                    UpdateAdvancedNmapStageStatus(line);
                 });
             });
 
@@ -143,6 +166,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             txtAdvNmapStatus.Text = result.Success ? "Completed" : "Completed with errors";
 
             PopulateAdvancedNmapPorts(result.RawOutput);
+            ShowRiskResult(result.RawOutput);
         }
         catch (OperationCanceledException)
         {
@@ -158,6 +182,41 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             progressAdvNmap.IsIndeterminate = false;
             btnAdvNmapStart.IsEnabled = true;
             btnAdvNmapStop.IsEnabled = false;
+        }
+    }
+
+    private void UpdateAdvancedNmapStageStatus(string line)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            return;
+        }
+
+        if (line.Contains("ARP Ping", StringComparison.OrdinalIgnoreCase)
+            || line.Contains("Ping Scan", StringComparison.OrdinalIgnoreCase)
+            || line.Contains("host discovery", StringComparison.OrdinalIgnoreCase))
+        {
+            txtAdvNmapStatus.Text = "Host discovery...";
+        }
+        else if (line.Contains("SYN Stealth", StringComparison.OrdinalIgnoreCase)
+                 || line.Contains("Port Scan", StringComparison.OrdinalIgnoreCase)
+                 || line.Contains("scanning", StringComparison.OrdinalIgnoreCase))
+        {
+            txtAdvNmapStatus.Text = "Port scanning...";
+        }
+        else if (line.Contains("NSE: Script scanning", StringComparison.OrdinalIgnoreCase)
+                 || line.Contains("--script", StringComparison.OrdinalIgnoreCase))
+        {
+            txtAdvNmapStatus.Text = "Running vuln scripts...";
+        }
+        else if (line.Contains("Host seems down", StringComparison.OrdinalIgnoreCase)
+                 || line.Contains("0 hosts up", StringComparison.OrdinalIgnoreCase))
+        {
+            txtAdvNmapStatus.Text = "Host down";
+        }
+        else if (line.Contains("Nmap done", StringComparison.OrdinalIgnoreCase))
+        {
+            txtAdvNmapStatus.Text = "Complete";
         }
     }
 
@@ -265,6 +324,39 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         txtAdvNmapDetailDescription.Text = string.Empty;
         txtAdvNmapMs17010.Text = "";
         txtAdvNmapNextCommands.Text = string.Empty;
+    }
+
+    private void ShowRiskResult(string nmapRawOutput)
+    {
+        var report = RiskDetector.Analyze(nmapRawOutput);
+
+        riskResultBorder.Visibility = Visibility.Visible;
+
+        var backgroundColor = (Color)ColorConverter.ConvertFromString(report.VerdictBg);
+        var borderColor = (Color)ColorConverter.ConvertFromString(report.VerdictColor);
+
+        verdictBadge.Background = new SolidColorBrush(backgroundColor);
+        verdictBadge.BorderBrush = new SolidColorBrush(borderColor);
+
+        riskResultBorder.Background = new SolidColorBrush(backgroundColor) { Opacity = 0.45 };
+        riskResultBorder.BorderBrush = new SolidColorBrush(borderColor) { Opacity = 0.8 };
+
+        txtVerdictIcon.Text = report.VerdictIcon;
+        txtVerdictMain.Text = report.Verdict;
+        txtVerdictTarget.Text = string.IsNullOrWhiteSpace(report.IpAddress)
+            ? txtAdvNmapTarget.Text
+            : report.IpAddress;
+        txtVerdictDetail.Text = report.VerdictDetail;
+
+        listRiskFindings.ItemsSource = report.Findings;
+        listSafePoints.ItemsSource = report.SafePoints;
+        listNextSteps.ItemsSource = report.NextSteps;
+
+        if (report.CriticalCount + report.HighCount > 0)
+        {
+            txtVulnCount.Text = (report.CriticalCount + report.HighCount).ToString();
+            txtVulnCount.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(report.VerdictColor));
+        }
     }
 
     private void LoadRecentScans()
@@ -611,6 +703,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         btnNmapScan.IsEnabled = false;
         btnNmapStop.IsEnabled = true;
+        progressNmap.IsIndeterminate = true;
         progressNmap.Value = 0;
         txtNmapStatus.Text = "Starting...";
         txtHostsUp.Text = "0";
@@ -635,6 +728,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             progressNmap.Value = percent;
             txtScanTime.Text = $"{(DateTime.UtcNow - _networkScanStartedAt).TotalSeconds:F1}s";
+            if (progressNmap.IsIndeterminate)
+            {
+                progressNmap.IsIndeterminate = false;
+            }
         });
 
         _netScanner.OnHostDiscovered += host => Dispatcher.Invoke(() => AddHostToTree(host));
@@ -672,6 +769,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             btnNmapScan.IsEnabled = true;
             btnNmapStop.IsEnabled = false;
+            progressNmap.IsIndeterminate = false;
             txtScanTime.Text = $"{(DateTime.UtcNow - _networkScanStartedAt).TotalSeconds:F1}s";
         }
     }
@@ -679,6 +777,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void BtnNmapStop_Click(object sender, RoutedEventArgs e)
     {
         _netScanner?.Stop();
+        txtNmapStatus.Text = "Stopping...";
+        progressNmap.IsIndeterminate = true;
         btnNmapScan.IsEnabled = true;
         btnNmapStop.IsEnabled = false;
     }
@@ -840,6 +940,198 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             txtNmapStatus.Text = $"Export failed: {ex.Message}";
         }
+    }
+
+    private async void BtnOvasTestConn_Click(object sender, RoutedEventArgs e)
+    {
+        ovasConnStatus.Text = "Testing...";
+        ovasConnBadge.Background = new SolidColorBrush(Color.FromRgb(30, 41, 59));
+        ovasConnBadge.BorderBrush = null;
+        ovasConnBadge.BorderThickness = new Thickness(0);
+
+        var settings = GetOvasSettings();
+        using var client = new OpenVasClient(settings);
+
+        try
+        {
+            await client.ConnectAsync();
+            ovasConnStatus.Text = "Connected";
+            ovasConnBadge.Background = new SolidColorBrush(Color.FromRgb(15, 68, 24));
+            ovasConnBadge.BorderBrush = new SolidColorBrush(Color.FromRgb(22, 163, 74));
+            ovasConnBadge.BorderThickness = new Thickness(1);
+            ovasConnStatus.Foreground = new SolidColorBrush(Color.FromRgb(74, 222, 128));
+        }
+        catch (Exception ex)
+        {
+            ovasConnStatus.Text = $"Failed: {ex.Message}";
+            ovasConnBadge.Background = new SolidColorBrush(Color.FromRgb(68, 15, 15));
+            ovasConnBadge.BorderBrush = new SolidColorBrush(Color.FromRgb(220, 38, 38));
+            ovasConnBadge.BorderThickness = new Thickness(1);
+            ovasConnStatus.Foreground = new SolidColorBrush(Color.FromRgb(248, 113, 113));
+        }
+    }
+
+    private async void BtnOvasScan_Click(object sender, RoutedEventArgs e)
+    {
+        _ovasResults.Clear();
+        ovasCritCount.Text = ovasHighCount.Text = ovasMedCount.Text = ovasLowCount.Text = ovasTotalCount.Text = "0";
+        ovasEmptyPanel.Visibility = Visibility.Visible;
+        ovasDetailPanel.Visibility = Visibility.Collapsed;
+
+        btnOvasScan.IsEnabled = false;
+        btnOvasStop.IsEnabled = true;
+        progressOvas.Value = 0;
+        progressOvas.IsIndeterminate = false;
+
+        var profileName = (cmbOvasProfile.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Full and fast";
+        profileName = profileName.Split('(')[0].Trim();
+
+        var options = new ScanEngineOptions
+        {
+            Connection = GetOvasSettings(),
+            Target = txtOvasTarget.Text.Trim(),
+            TaskName = txtOvasTaskName.Text.Trim(),
+            ScanProfile = profileName
+        };
+
+        _ovasEngine = new OpenVasScanEngine();
+
+        _ovasEngine.OnLog += msg =>
+            Dispatcher.Invoke(() => txtOvasStatus.Text = msg);
+
+        _ovasEngine.OnProgress += progress =>
+            Dispatcher.Invoke(() =>
+            {
+                txtOvasStatus.Text = progress.Message;
+                txtOvasPercent.Text = progress.Percent > 0 ? $"{progress.Percent}%" : string.Empty;
+                progressOvas.Value = progress.Percent;
+                progressOvas.IsIndeterminate = progress.Status == "Connecting";
+            });
+
+        _ovasEngine.OnComplete += results =>
+            Dispatcher.Invoke(() => PopulateOvasResults(results));
+
+        _ovasEngine.OnError += ex =>
+            Dispatcher.Invoke(() =>
+            {
+                txtOvasStatus.Text = $"Error: {ex.Message}";
+                MessageBox.Show(
+                    $"OpenVAS scan failed:\n\n{ex.Message}\n\n" +
+                    "Make sure:\n" +
+                    "1. GVM/OpenVAS is running\n" +
+                    "2. Host/port/credentials are correct\n" +
+                    "3. Run: sudo systemctl start gvmd",
+                    "OpenVAS Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            });
+
+        await _ovasEngine.RunScanAsync(options);
+
+        btnOvasScan.IsEnabled = true;
+        btnOvasStop.IsEnabled = false;
+        progressOvas.IsIndeterminate = false;
+    }
+
+    private void BtnOvasStop_Click(object sender, RoutedEventArgs e)
+    {
+        _ovasEngine?.Stop();
+        txtOvasStatus.Text = "Stopping scan...";
+        btnOvasStop.IsEnabled = false;
+    }
+
+    private void PopulateOvasResults(List<OpenVasResult> results)
+    {
+        _ovasResults.Clear();
+        foreach (var result in results.OrderByDescending(r => r.CvssScore))
+        {
+            _ovasResults.Add(result);
+        }
+
+        ovasCritCount.Text = results.Count(r => r.Severity == "critical").ToString();
+        ovasHighCount.Text = results.Count(r => r.Severity == "high").ToString();
+        ovasMedCount.Text = results.Count(r => r.Severity == "medium").ToString();
+        ovasLowCount.Text = results.Count(r => r.Severity == "low").ToString();
+        ovasTotalCount.Text = results.Count.ToString();
+    }
+
+    private void GridOvasResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (gridOvasResults.SelectedItem is not OpenVasResult result)
+        {
+            ovasEmptyPanel.Visibility = Visibility.Visible;
+            ovasDetailPanel.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        ovasEmptyPanel.Visibility = Visibility.Collapsed;
+        ovasDetailPanel.Visibility = Visibility.Visible;
+
+        ovasDetailName.Text = result.Name;
+        ovasDetailHost.Text = $"{result.Host}  ·  Port {result.Port}";
+
+        var riskColor = (Color)ColorConverter.ConvertFromString(result.SeverityColor);
+        ovasRiskBadge.Background = new SolidColorBrush(riskColor) { Opacity = 0.25 };
+        ovasRiskBadge.BorderBrush = new SolidColorBrush(riskColor);
+        ovasRiskLabel.Text = result.SeverityUpper;
+        ovasCvssLabel.Text = result.CvssDisplay;
+
+        ovasCveId.Text = string.IsNullOrWhiteSpace(result.CveId) ? "No CVE" : result.CveId;
+        ovasFamilyName.Text = string.IsNullOrWhiteSpace(result.FamilyName) ? "Unknown family" : result.FamilyName;
+        ovasDescription.Text = string.IsNullOrWhiteSpace(result.Description) ? "No description." : result.Description;
+        ovasSolution.Text = string.IsNullOrWhiteSpace(result.Solution) ? "No remediation provided." : result.Solution;
+        ovasNvtOid.Text = $"NVT OID: {result.NvtOid}\nhttps://www.openvas.org/";
+
+        ovasDetailPanel.ScrollToTop();
+    }
+
+    private void BtnOvasExport_Click(object sender, RoutedEventArgs e)
+    {
+        if (_ovasResults.Count == 0)
+        {
+            txtOvasStatus.Text = "No OpenVAS results to export.";
+            return;
+        }
+
+        var doc = new XDocument(
+            new XElement("openvas_results",
+                new XAttribute("target", txtOvasTarget.Text),
+                new XAttribute("scan_time", DateTime.Now.ToString("o")),
+                new XAttribute("total", _ovasResults.Count),
+                _ovasResults.Select(r =>
+                    new XElement("result",
+                        new XAttribute("severity", r.Severity),
+                        new XAttribute("cvss", r.CvssScore),
+                        new XElement("name", r.Name),
+                        new XElement("host", r.Host),
+                        new XElement("port", r.Port),
+                        new XElement("cve", r.CveId),
+                        new XElement("description", r.Description),
+                        new XElement("solution", r.Solution),
+                        new XElement("nvt_oid", r.NvtOid)))));
+
+        var path = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            $"openvas_{DateTime.Now:yyyyMMdd_HHmm}.xml");
+
+        doc.Save(path);
+        MessageBox.Show(
+            $"Exported {_ovasResults.Count} results to:\n{path}",
+            "Export complete",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+    }
+
+    private OpenVasSettings GetOvasSettings()
+    {
+        return new OpenVasSettings
+        {
+            Host = txtOvasHost.Text.Trim(),
+            Port = int.TryParse(txtOvasPort.Text, out var parsedPort) ? parsedPort : 9390,
+            Username = txtOvasUser.Text.Trim(),
+            Password = pwdOvas.Password,
+            AcceptAllCerts = true
+        };
     }
 
     private void Encode_Base64(object sender, RoutedEventArgs e)
