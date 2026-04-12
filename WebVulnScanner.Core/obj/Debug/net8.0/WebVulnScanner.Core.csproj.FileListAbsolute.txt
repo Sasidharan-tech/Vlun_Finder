@@ -13,3 +13,18 @@ D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScann
 D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.genruntimeconfig.cache
 D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\ref\WebVulnScanner.Core.dll
 D:\my final year projects\vlun\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.sourcelink.json
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\bin\Debug\net8.0\WebVulnScanner.Core.deps.json
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\bin\Debug\net8.0\WebVulnScanner.Core.runtimeconfig.json
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\bin\Debug\net8.0\WebVulnScanner.Core.dll
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\bin\Debug\net8.0\WebVulnScanner.Core.pdb
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.csproj.AssemblyReference.cache
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.AssemblyInfoInputs.cache
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.AssemblyInfo.cs
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.csproj.CoreCompileInputs.cache
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.sourcelink.json
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.dll
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\refint\WebVulnScanner.Core.dll
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.pdb
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\WebVulnScanner.Core.genruntimeconfig.cache
+D:\TTT\Vlun_Finder\WebVulnScanner.Core\obj\Debug\net8.0\ref\WebVulnScanner.Core.dll

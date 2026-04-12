@@ -17,6 +17,16 @@
         <SolidColorBrush x:Key="BrushBorder" Color="#334155"/>
         <SolidColorBrush x:Key="BrushTextPrimary" Color="#F8FAFC"/>
         <SolidColorBrush x:Key="BrushTextSecondary" Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="BrushChromeBackground" Color="#0B1220"/>
+        <SolidColorBrush x:Key="BrushTabBackground" Color="#1F2937"/>
+        <SolidColorBrush x:Key="BrushTabSelectedBackground" Color="#0F172A"/>
+        <SolidColorBrush x:Key="BrushTabHoverBackground" Color="#334155"/>
+        <SolidColorBrush x:Key="BrushDataGridRow" Color="#0F1A2E"/>
+        <SolidColorBrush x:Key="BrushDataGridRowAlt" Color="#111F36"/>
+        <SolidColorBrush x:Key="BrushDataGridRowHover" Color="#1E3A5F"/>
+        <SolidColorBrush x:Key="BrushDataGridRowSelected" Color="#0EA5E9"/>
+        <SolidColorBrush x:Key="BrushDataGridGridlineH" Color="#243244"/>
+        <SolidColorBrush x:Key="BrushDataGridGridlineV" Color="#1B2533"/>
 
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
@@ -29,9 +39,9 @@
         </Style>
 
         <Style TargetType="TabItem">
-    <Setter Property="Foreground" Value="#CBD5E1"/>
-    <Setter Property="Background" Value="#1F2937"/>
-    <Setter Property="BorderBrush" Value="#334155"/>
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}"/>
+    <Setter Property="Background" Value="{StaticResource BrushTabBackground}"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="Padding" Value="14,8"/>
     <Setter Property="Margin" Value="4,0,4,0"/>
@@ -55,14 +65,14 @@
                 </Border>
                 <ControlTemplate.Triggers>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter TargetName="TabBorder" Property="Background" Value="#0F172A"/>
+                        <Setter TargetName="TabBorder" Property="Background" Value="{StaticResource BrushTabSelectedBackground}"/>
                         <Setter TargetName="TabBorder" Property="BorderBrush" Value="#38BDF8"/>
-                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
                     </Trigger>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter TargetName="TabBorder" Property="Background" Value="#334155"/>
+                        <Setter TargetName="TabBorder" Property="Background" Value="{StaticResource BrushTabHoverBackground}"/>
                         <Setter TargetName="TabBorder" Property="BorderBrush" Value="#38BDF8"/>
-                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
@@ -74,10 +84,10 @@
             <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
             <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-            <Setter Property="HorizontalGridLinesBrush" Value="#243244"/>
-            <Setter Property="VerticalGridLinesBrush" Value="#1B2533"/>
-            <Setter Property="RowBackground" Value="#0F1A2E"/>
-            <Setter Property="AlternatingRowBackground" Value="#111F36"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BrushDataGridGridlineH}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BrushDataGridGridlineV}"/>
+            <Setter Property="RowBackground" Value="{StaticResource BrushDataGridRow}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource BrushDataGridRowAlt}"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="ColumnHeaderStyle">
                 <Setter.Value>
@@ -137,12 +147,12 @@
             <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#1E3A5F"/>
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="{StaticResource BrushDataGridRowHover}"/>
+                    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#0EA5E9"/>
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="{StaticResource BrushDataGridRowSelected}"/>
+                    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -170,7 +180,7 @@
     </Window.Resources>
 
     <Grid Background="{StaticResource BrushBackground}">
-        <Border Margin="14" Padding="10" Background="#0B1220" CornerRadius="14" BorderBrush="#1E293B" BorderThickness="1">
+        <Border Margin="14" Padding="10" Background="{StaticResource BrushChromeBackground}" CornerRadius="14" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1">
             <TabControl Margin="8">
             <TabItem Header="Dashboard">
                 <Grid>
@@ -239,7 +249,7 @@
                         <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Target URL:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="SemiBold"/>
                         <TextBox x:Name="txtTarget" Width="500" FontSize="14" Padding="5"
-                                 Text="http://testphp.vulnweb.com"/>
+                                 Text="" ToolTip="Enter the target URL to scan"/>
                         <CheckBox x:Name="chkDeepScan" Content="Deep Scan (Crawl)" Margin="15,0" VerticalAlignment="Center"/>
                         <Button x:Name="btnScan" Content="Start Scan" Padding="20,5"
                                 Background="#16A34A" Foreground="White" FontWeight="Bold"
@@ -291,6 +301,7 @@
                                           Checked="BtnIntercept_Checked" Unchecked="BtnIntercept_Unchecked"
                                           Background="#0284C7" Margin="0,0,8,0"/>
                             <Button Content="▶ Forward" Click="BtnForward_Click" Background="#16A34A"/>
+                            <Button Content="⏩ Forward All" Click="BtnForwardAll_Click" Background="#22C55E"/>
                             <Button Content="✕ Drop" Click="BtnDrop_Click" Background="#EA580C"/>
                             <Button Content="Clear" Click="BtnClearProxy_Click" Background="#475569"/>
                             <Button Content="Copy Raw" Click="BtnCopyRequest_Click" Background="#0EA5E9"/>
@@ -379,7 +390,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                            <TextBox x:Name="txtRepeaterUrl" Width="300" Text="https://target.com/api"/>
+                            <TextBox x:Name="txtRepeaterUrl" Width="300" Text="" ToolTip="Enter request URL (for example: https://api.site.com/endpoint)"/>
                             <Button Content="Send" Click="BtnRepeaterSend_Click" Background="#16A34A"/>
                             <Button Content="Clear" Background="#475569" Click="BtnRepeaterClear_Click"/>
                         </StackPanel>
@@ -416,7 +427,7 @@
 
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                         <TextBlock Text="URL:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBox x:Name="txtHeaderUrl" Width="480" Text="https://example.com"/>
+                        <TextBox x:Name="txtHeaderUrl" Width="480" Text="" ToolTip="Enter a URL to analyze response headers"/>
                         <Button Content="Analyze Headers" Click="BtnAnalyzeHeaders_Click" Background="#0284C7"/>
                     </StackPanel>
 
@@ -442,7 +453,7 @@
 
                     <TextBox x:Name="txtEncodeInput" Grid.Row="0" AcceptsReturn="True"
                              FontFamily="Consolas" VerticalScrollBarVisibility="Auto"
-                             TextWrapping="Wrap" Text="Enter text to encode/decode..."/>
+                             TextWrapping="Wrap" Text="" ToolTip="Enter text to encode or decode"/>
 
                     <WrapPanel Grid.Row="1" Margin="0,8">
                         <Button Content="Base64 Encode" Click="Encode_Base64"/>
@@ -478,8 +489,8 @@
                             CornerRadius="10" Padding="10" Margin="0,0,0,8">
                         <WrapPanel ItemHeight="32">
                             <TextBlock Text="Target:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <TextBox x:Name="txtNmapTarget" Width="260" Text="192.168.1.1"
-                                     ToolTip="IP, hostname, or CIDR range e.g. 192.168.1.0/24"/>
+                            <TextBox x:Name="txtNmapTarget" Width="260" Text=""
+                                     ToolTip="IP, hostname, or CIDR range (for example: 192.168.1.0/24)"/>
 
                             <TextBlock Text="Ports:" VerticalAlignment="Center" Margin="12,0,6,0"/>
                             <TextBox x:Name="txtNmapPorts" Width="140" Text="1-1024"
@@ -635,8 +646,8 @@
                             </Grid.RowDefinitions>
                             <WrapPanel ItemHeight="32">
                                 <TextBlock Text="Target:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <TextBox x:Name="txtAdvNmapTarget" Width="240" Text="10.45.20.192"
-                                         ToolTip="IP / host / CIDR"/>
+                                <TextBox x:Name="txtAdvNmapTarget" Width="240" Text=""
+                                         ToolTip="Enter IP, host, or CIDR"/>
 
                                 <TextBlock Text="Profile:" VerticalAlignment="Center" Margin="12,0,6,0"/>
                                 <ComboBox x:Name="cmbAdvNmapProfile" Width="250" SelectedIndex="0"
@@ -661,7 +672,7 @@
                                      FontFamily="Consolas" IsReadOnly="True"
                                      Background="#0B1220" Foreground="#38BDF8"
                                      BorderBrush="#334155" BorderThickness="1"
-                                     Text="nmap -p 445 --script smb-vuln-ms17-010,smb-protocols,smb2-security-mode -v 10.45.20.192"/>
+                                     Text="nmap -p 445 --script smb-vuln-ms17-010,smb-protocols,smb2-security-mode -v target-host"/>
                         </Grid>
                     </Border>
 
@@ -841,7 +852,7 @@
                             Padding="10" Margin="0,0,0,8">
                         <WrapPanel ItemHeight="32">
                             <TextBlock Text="Host:" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBox x:Name="txtOvasHost" Width="140" Text="127.0.0.1"/>
+                            <TextBox x:Name="txtOvasHost" Width="140" Text="" ToolTip="OpenVAS host (for example: localhost or server IP)"/>
 
                             <TextBlock Text="Port:" VerticalAlignment="Center" Margin="10,0,6,0"/>
                             <TextBox x:Name="txtOvasPort" Width="60" Text="9390"/>
@@ -874,7 +885,7 @@
                         <WrapPanel ItemHeight="32">
                             <TextBlock Text="Target:" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <TextBox x:Name="txtOvasTarget" Width="220"
-                                     Text="192.168.1.1"
+                                     Text=""
                                      ToolTip="IP, hostname, or CIDR range (e.g. 192.168.1.0/24)"/>
 
                             <TextBlock Text="Profile:" VerticalAlignment="Center" Margin="10,0,6,0"/>
@@ -1132,6 +1143,719 @@
                             </Grid>
                         </Border>
                     </Grid>
+                </Grid>
+            </TabItem>
+            
+
+
+
+<!-- ____________________________________________________________________________ -->
+
+
+
+
+<!-- ____________________________________________________________________________ -->
+            <TabItem Header="Settings">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1" CornerRadius="10" Padding="8">
+                        <TabControl>
+                            <TabItem Header="General">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="8">
+                                        <TextBlock Text="General Defaults" FontSize="15" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="Default Target URL" Margin="0,4,0,4"/>
+                                        <TextBox x:Name="txtSetDefaultTargetUrl" Text="" ToolTip="Default URL used in Scanner tab"/>
+
+                                        <CheckBox x:Name="chkSetDefaultDeepScan" Content="Deep scan enabled by default" Margin="0,10,0,2"/>
+
+                                        <TextBlock Text="Proxy Port" Margin="0,10,0,4"/>
+                                        <TextBox x:Name="txtSetProxyPort" Text="8080" Width="120"/>
+
+                                        <TextBlock Text="Default Nmap Target" Margin="0,10,0,4"/>
+                                        <TextBox x:Name="txtSetNmapTarget" Text="" ToolTip="Default value for Net Scanner target"/>
+
+                                        <TextBlock Text="Default Nmap Ports" Margin="0,10,0,4"/>
+                                        <TextBox x:Name="txtSetNmapPorts" Text="1-1024" Width="200"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+
+                            <TabItem Header="Openvps">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="8">
+                                        <TextBlock Text="OpenVAS Defaults" FontSize="15" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="Host" Margin="0,4,0,4"/>
+                                        <TextBox x:Name="txtSetOvasHost" Text="" Width="220"/>
+
+                                        <TextBlock Text="Port" Margin="0,10,0,4"/>
+                                        <TextBox x:Name="txtSetOvasPort" Text="9390" Width="120"/>
+
+                                        <TextBlock Text="Username" Margin="0,10,0,4"/>
+                                        <TextBox x:Name="txtSetOvasUser" Text="admin" Width="220"/>
+
+                                        <TextBlock Text="Notes" Margin="0,14,0,4" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Passwords are not persisted for safety. Enter OpenVAS password when needed." TextWrapping="Wrap" Foreground="#94A3B8"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+
+                            <TabItem Header="Appearance">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="12">
+                                        <TextBlock Text="Appearance" FontSize="15" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="Theme" Margin="0,4,0,4"/>
+                                        <ComboBox x:Name="cmbSetThemeMode" Width="220" SelectedIndex="0">
+                                            <ComboBoxItem Content="System default"/>
+                                            <ComboBoxItem Content="Dark"/>
+                                            <ComboBoxItem Content="White"/>
+                                        </ComboBox>
+
+                                        <TextBlock Text="Text font size" Margin="0,10,0,4"/>
+                                        <ComboBox x:Name="cmbSetFontSize" Width="140" SelectedIndex="2">
+                                            <ComboBoxItem Content="11"/>
+                                            <ComboBoxItem Content="12"/>
+                                            <ComboBoxItem Content="13"/>
+                                            <ComboBoxItem Content="14"/>
+                                            <ComboBoxItem Content="15"/>
+                                            <ComboBoxItem Content="16"/>
+                                        </ComboBox>
+
+                                        <TextBlock Text="Text style" Margin="0,10,0,4"/>
+                                        <ComboBox x:Name="cmbSetFontStyle" Width="220" SelectedIndex="0">
+                                            <ComboBoxItem Content="Default"/>
+                                            <ComboBoxItem Content="Classic"/>
+                                            <ComboBoxItem Content="Modern"/>
+                                            <ComboBoxItem Content="Monospace"/>
+                                        </ComboBox>
+
+                                        <WrapPanel Margin="0,14,0,0">
+                                            <Button Content="Apply Appearance" Background="#0284C7" Click="BtnApplyAppearance_Click"/>
+                                        </WrapPanel>
+
+                                        <TextBlock Text="Tip: Save Settings after applying to keep these changes for next launch."
+                                                   Margin="0,10,0,0" Foreground="#94A3B8" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+
+                          <TabItem Header="credits">
+    <Grid Margin="8" ClipToBounds="True">
+        <Grid.Resources>
+
+            <!-- Scanline sweep -->
+            <Storyboard x:Key="ScanlineStoryboard" RepeatBehavior="Forever">
+                <DoubleAnimation Storyboard.TargetName="scanlineTransform"
+                                 Storyboard.TargetProperty="Y"
+                                 From="-6" To="900"
+                                 Duration="0:0:2.8"/>
+            </Storyboard>
+            <Storyboard x:Key="Scanline2Storyboard" RepeatBehavior="Forever">
+                <DoubleAnimation Storyboard.TargetName="scanline2Transform"
+                                 Storyboard.TargetProperty="Y"
+                                 From="-6" To="900"
+                                 Duration="0:0:4.1"
+                                 BeginTime="0:0:1.5"/>
+            </Storyboard>
+
+            <!-- Cursor blink -->
+            <Storyboard x:Key="CursorBlinkStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+                <DoubleAnimation Storyboard.TargetName="cursorBlink"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="1" To="0"
+                                 Duration="0:0:0.5"/>
+            </Storyboard>
+
+            <!-- Border pulse -->
+            <Storyboard x:Key="BorderPulseStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+                <ColorAnimation Storyboard.TargetName="creditBorderBrush"
+                                Storyboard.TargetProperty="Color"
+                                From="#0D3320" To="#22C55E"
+                                Duration="0:0:1.6"/>
+            </Storyboard>
+
+            <!-- Glow pulse on title -->
+            <Storyboard x:Key="GlowPulseStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+                <DoubleAnimation Storyboard.TargetName="titleGlow"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0.3" To="1.0"
+                                 Duration="0:0:1.2"/>
+            </Storyboard>
+
+            <!-- Corner spin -->
+            <Storyboard x:Key="CornerSpinStoryboard" RepeatBehavior="Forever">
+                <DoubleAnimation Storyboard.TargetName="cornerRotate"
+                                 Storyboard.TargetProperty="Angle"
+                                 From="0" To="360"
+                                 Duration="0:0:6"/>
+            </Storyboard>
+
+            <!-- Flicker overlay -->
+            <Storyboard x:Key="FlickerStoryboard" RepeatBehavior="Forever">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="flickerOverlay"
+                                               Storyboard.TargetProperty="Opacity">
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:0.00" Value="0.00"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:1.80" Value="0.00"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:1.82" Value="0.06"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:1.85" Value="0.00"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:3.10" Value="0.00"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:3.11" Value="0.08"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:3.13" Value="0.00"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:5.40" Value="0.00"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:5.41" Value="0.05"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:5.44" Value="0.03"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:5.46" Value="0.00"/>
+                    <DiscreteDoubleKeyFrame KeyTime="0:0:6.00" Value="0.00"/>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+
+            <!-- Top bar slide-in -->
+            <Storyboard x:Key="HeaderSlideStoryboard">
+                <DoubleAnimation Storyboard.TargetName="headerTranslate"
+                                 Storyboard.TargetProperty="X"
+                                 From="-400" To="0"
+                                 Duration="0:0:0.7">
+                    <DoubleAnimation.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="headerPanel"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1"
+                                 Duration="0:0:0.5"/>
+            </Storyboard>
+
+            <!-- Content fade-in stagger -->
+            <Storyboard x:Key="ContentFadeStoryboard">
+                <DoubleAnimation Storyboard.TargetName="contentArea"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0" To="1"
+                                 BeginTime="0:0:0.6"
+                                 Duration="0:0:0.8"/>
+                <DoubleAnimation Storyboard.TargetName="contentTranslate"
+                                 Storyboard.TargetProperty="Y"
+                                 From="30" To="0"
+                                 BeginTime="0:0:0.6"
+                                 Duration="0:0:0.7">
+                    <DoubleAnimation.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+        </Grid.Resources>
+
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource ScanlineStoryboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource Scanline2Storyboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource CursorBlinkStoryboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource BorderPulseStoryboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource GlowPulseStoryboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource CornerSpinStoryboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource FlickerStoryboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource HeaderSlideStoryboard}"/>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource ContentFadeStoryboard}"/>
+            </EventTrigger>
+        </Grid.Triggers>
+
+        <!-- Outer border with pulsing glow -->
+        <Border CornerRadius="10" BorderThickness="1.5" ClipToBounds="True">
+            <Border.BorderBrush>
+                <SolidColorBrush x:Name="creditBorderBrush" Color="#0D3320"/>
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#010905" Offset="0"/>
+                    <GradientStop Color="#040F09" Offset="0.5"/>
+                    <GradientStop Color="#010905" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect Color="#22C55E" BlurRadius="24" ShadowDepth="0" Opacity="0.25"/>
+            </Border.Effect>
+
+            <Grid>
+
+                <!-- CRT scanline texture (horizontal lines pattern) -->
+                <Rectangle IsHitTestVisible="False" Opacity="0.045">
+                    <Rectangle.Fill>
+                        <DrawingBrush TileMode="Tile" Viewport="0,0,1,4" ViewportUnits="Absolute">
+                            <DrawingBrush.Drawing>
+                                <GeometryDrawing Brush="#00FF00">
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry Rect="0,0,2000,2"/>
+                                    </GeometryDrawing.Geometry>
+                                </GeometryDrawing>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+                <!-- Noise / vignette overlay -->
+                <Rectangle IsHitTestVisible="False" Opacity="0.18">
+                    <Rectangle.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="Transparent" Offset="0.5"/>
+                            <GradientStop Color="#000000" Offset="1.0"/>
+                        </RadialGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+                <!-- Main content grid -->
+                <Grid Margin="16,12,16,12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- ═══ HEADER BAR ═══ -->
+                    <StackPanel x:Name="headerPanel" Grid.Row="0" Opacity="0" Margin="0,0,0,6">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform x:Name="headerTranslate" X="-400"/>
+                        </StackPanel.RenderTransform>
+
+                        <!-- Top status bar -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="[ SYSTEM://ROOT/PROJECT_CREDITS.SYS ]"
+                                       FontFamily="Consolas" FontSize="9" Foreground="#1A6B3A"
+                                       VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="STA:" FontFamily="Consolas" FontSize="9" Foreground="#1A6B3A"/>
+                                <TextBlock Text="OK" FontFamily="Consolas" FontSize="9" Foreground="#4ADE80" Margin="3,0,8,0"/>
+                                <TextBlock Text="MEM:" FontFamily="Consolas" FontSize="9" Foreground="#1A6B3A"/>
+                                <TextBlock Text="64KB" FontFamily="Consolas" FontSize="9" Foreground="#4ADE80" Margin="3,0,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Separator line -->
+                        <Rectangle Height="1" Margin="0,4,0,6">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="Transparent" Offset="0"/>
+                                    <GradientStop Color="#22C55E" Offset="0.2"/>
+                                    <GradientStop Color="#4ADE80" Offset="0.5"/>
+                                    <GradientStop Color="#22C55E" Offset="0.8"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+
+                        <!-- Main title row -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Spinning corner bracket -->
+                            <Viewbox Grid.Column="0" Width="28" Height="28" Margin="0,0,8,0">
+                                <Canvas Width="40" Height="40">
+                                    <Canvas.RenderTransform>
+                                        <RotateTransform x:Name="cornerRotate" Angle="0" CenterX="20" CenterY="20"/>
+                                    </Canvas.RenderTransform>
+                                    <Rectangle Canvas.Left="0" Canvas.Top="0" Width="40" Height="3" Fill="#22C55E" Opacity="0.7"/>
+                                    <Rectangle Canvas.Left="0" Canvas.Top="37" Width="40" Height="3" Fill="#22C55E" Opacity="0.7"/>
+                                    <Rectangle Canvas.Left="0" Canvas.Top="0" Width="3" Height="40" Fill="#22C55E" Opacity="0.7"/>
+                                    <Rectangle Canvas.Left="37" Canvas.Top="0" Width="3" Height="40" Fill="#22C55E" Opacity="0.7"/>
+                                    <Rectangle Canvas.Left="6" Canvas.Top="6" Width="28" Height="28" Fill="Transparent"
+                                               StrokeThickness="1">
+                                        <Rectangle.Stroke>
+                                            <SolidColorBrush Color="#22C55E" Opacity="0.4"/>
+                                        </Rectangle.Stroke>
+                                    </Rectangle>
+                                </Canvas>
+                            </Viewbox>
+
+                            <!-- Title + cursor -->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <!-- Glow shadow layer -->
+                                <TextBlock x:Name="titleGlow"
+                                           Text="SYSTEM://PROJECT_CREDITS"
+                                           FontFamily="Consolas" FontSize="19" FontWeight="Bold"
+                                           Foreground="#22C55E"
+                                           Opacity="0.5">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="#00FF00" BlurRadius="18" ShadowDepth="0" Opacity="1"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                                <TextBlock Text="SYSTEM://PROJECT_CREDITS"
+                                           FontFamily="Consolas" FontSize="19" FontWeight="Bold"
+                                           Foreground="#4ADE80"
+                                           Margin="-245,0,0,0"/>
+                                <TextBlock x:Name="cursorBlink" Text="█"
+                                           FontFamily="Consolas" FontSize="19" FontWeight="Bold"
+                                           Foreground="#4ADE80" Margin="4,0,0,0"/>
+                            </StackPanel>
+
+                            <!-- Version badge -->
+                            <Border Grid.Column="2" Background="#0A2E18" BorderThickness="1"
+                                    CornerRadius="3" Padding="6,2" VerticalAlignment="Center">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="#22C55E" Opacity="0.5"/>
+                                </Border.BorderBrush>
+                                <TextBlock Text="v1.0.0" FontFamily="Consolas" FontSize="10" Foreground="#4ADE80"/>
+                            </Border>
+                        </Grid>
+
+                        <!-- Bottom separator -->
+                        <Rectangle Height="1" Margin="0,6,0,0">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="Transparent" Offset="0"/>
+                                    <GradientStop Color="#22C55E" Offset="0.3"/>
+                                    <GradientStop Color="#22C55E" Offset="0.7"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </StackPanel>
+
+                    <!-- ═══ BOOT LOG STRIP ═══ -->
+                    <Border Grid.Row="1" Background="#030E07" BorderThickness="0,0,0,0"
+                            CornerRadius="4" Padding="10,6" Margin="0,4,0,8">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="#0D3320" Opacity="0.8"/>
+                        </Border.BorderBrush>
+                        <StackPanel>
+                            <TextBlock FontFamily="Consolas" FontSize="10" Foreground="#1D7A40">
+                                <Run Text="[  0.001] "/>
+                                <Run Text="Kernel " Foreground="#2EA855"/>
+                                <Run Text="credits_module" Foreground="#4ADE80"/>
+                                <Run Text=" loaded successfully" Foreground="#2EA855"/>
+                            </TextBlock>
+                            <TextBlock FontFamily="Consolas" FontSize="10" Foreground="#1D7A40">
+                                <Run Text="[  0.003] "/>
+                                <Run Text="Mounting developer record... " Foreground="#2EA855"/>
+                                <Run Text="[ OK ]" Foreground="#4ADE80"/>
+                            </TextBlock>
+                            <TextBlock FontFamily="Consolas" FontSize="10" Foreground="#1D7A40">
+                                <Run Text="[  0.007] "/>
+                                <Run Text="Initializing display subsystem..." Foreground="#2EA855"/>
+                                <Run Text=" [ OK ]" Foreground="#4ADE80"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ═══ SCROLLABLE CONTENT ═══ -->
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="contentArea" Opacity="0">
+                            <StackPanel.RenderTransform>
+                                <TranslateTransform x:Name="contentTranslate" Y="30"/>
+                            </StackPanel.RenderTransform>
+
+                            <!-- Developer block -->
+                            <Border Background="#030E07" CornerRadius="6" Padding="12,8" Margin="0,0,0,6" BorderThickness="1">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="#14532D" Opacity="0.7"/>
+                                </Border.BorderBrush>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Accent bar -->
+                                    <Rectangle Grid.Column="0" Fill="#22C55E" Margin="0,0,10,0"/>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#1D7A40">
+                                            <Run Text="┌─[ " Foreground="#0D5C2A"/>
+                                            <Run Text="👨‍💻 DEVELOPER" Foreground="#4ADE80" FontWeight="Bold"/>
+                                            <Run Text=" ]" Foreground="#0D5C2A"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="13" FontWeight="Bold"
+                                                   Foreground="#DCFCE7" Margin="0,4,0,1">
+                                            <Run Text="│  "/>
+                                            <Run Text="Sasidharan M"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#86EFAC">
+                                            <Run Text="│  "/>
+                                            <Run Text="Full Stack · Project Architect · Lead Dev"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#4B7A5A" Margin="0,3,0,0">
+                                            <Run Text="└──────────────────────────────"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Academic block -->
+                            <Border Background="#030E07" CornerRadius="6" Padding="12,8" Margin="0,0,0,6" BorderThickness="1">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="#14532D" Opacity="0.7"/>
+                                </Border.BorderBrush>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0" Fill="#38BDF8" Margin="0,0,10,0"/>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBlock FontFamily="Consolas" FontSize="11">
+                                            <Run Text="┌─[ " Foreground="#0D5C2A"/>
+                                            <Run Text="🎓 ACADEMIC RECORD" Foreground="#4ADE80" FontWeight="Bold"/>
+                                            <Run Text=" ]" Foreground="#0D5C2A"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#DCFCE7" Margin="0,4,0,1">
+                                            <Run Text="│  DEGREE   : "/>
+                                            <Run Text="M.Sc Computer Science" FontWeight="Bold"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#DCFCE7">
+                                            <Run Text="│  INSTITUTE: "/>
+                                            <Run Text="Periyar University" FontWeight="Bold"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#4B7A5A" Margin="0,3,0,0">
+                                            <Run Text="└──────────────────────────────"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Portfolio block -->
+                            <Border Background="#030E07" CornerRadius="6" Padding="12,8" Margin="0,0,0,6" BorderThickness="1">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="#14532D" Opacity="0.7"/>
+                                </Border.BorderBrush>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0" Fill="#A78BFA" Margin="0,0,10,0"/>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBlock FontFamily="Consolas" FontSize="11">
+                                            <Run Text="┌─[ " Foreground="#0D5C2A"/>
+                                            <Run Text="🌐 NETWORK NODE" Foreground="#4ADE80" FontWeight="Bold"/>
+                                            <Run Text=" ]" Foreground="#0D5C2A"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#DCFCE7" Margin="0,4,0,1">
+                                            <Run Text="│  PROTOCOL : "/>
+                                            <Run Text="HTTPS" Foreground="#4ADE80"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Margin="0,0,0,0">
+                                            <Run Text="│  ENDPOINT : " Foreground="#DCFCE7"/>
+                                            <Run Text="https://www.sasidharan.tech" Foreground="#38BDF8"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#4B7A5A" Margin="0,3,0,0">
+                                            <Run Text="└──────────────────────────────"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Special Thanks block -->
+                            <Border Background="#030E07" CornerRadius="6" Padding="12,8" Margin="0,0,0,6" BorderThickness="1">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="#14532D" Opacity="0.7"/>
+                                </Border.BorderBrush>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0" Fill="#F472B6" Margin="0,0,10,0"/>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBlock FontFamily="Consolas" FontSize="11">
+                                            <Run Text="┌─[ " Foreground="#0D5C2A"/>
+                                            <Run Text="❤️ SPECIAL THANKS" Foreground="#4ADE80" FontWeight="Bold"/>
+                                            <Run Text=" ]" Foreground="#0D5C2A"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#DCFCE7" Margin="0,4,0,1">
+                                            <Run Text="│  "/>
+                                            <Run Text="▸ " Foreground="#4ADE80"/>
+                                            <Run Text="Faculty — Computer Science Dept."/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#DCFCE7">
+                                            <Run Text="│  "/>
+                                            <Run Text="▸ " Foreground="#4ADE80"/>
+                                            <Run Text="Friends &amp; Supporters"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#DCFCE7" Margin="0,0,0,0">
+                                            <Run Text="│  "/>
+                                            <Run Text="▸ " Foreground="#4ADE80"/>
+                                            <Run Text="Family — for continuous support"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#4B7A5A" Margin="0,3,0,0">
+                                            <Run Text="└──────────────────────────────"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Disclaimer block -->
+                            <Border Background="#0C0704" CornerRadius="6" Padding="12,8" Margin="0,0,0,4" BorderThickness="1">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="#7C2D12" Opacity="0.7"/>
+                                </Border.BorderBrush>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0" Fill="#EF4444" Margin="0,0,10,0"/>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBlock FontFamily="Consolas" FontSize="11">
+                                            <Run Text="┌─[ " Foreground="#7C2D12"/>
+                                            <Run Text="⚠ DISCLAIMER" Foreground="#FCA5A5" FontWeight="Bold"/>
+                                            <Run Text=" ]" Foreground="#7C2D12"/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#FEE2E2"
+                                                   TextWrapping="Wrap" Margin="0,4,0,1">
+                                            <Run Text="│  "/>
+                                            <Run Text="Developed for educational and research purposes only."/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#FCA5A5"
+                                                   TextWrapping="Wrap">
+                                            <Run Text="│  "/>
+                                            <Run Text="Unauthorized or unethical use is strictly prohibited."/>
+                                        </TextBlock>
+                                        <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#7C2D12" Margin="0,3,0,0">
+                                            <Run Text="└──────────────────────────────"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- ═══ FOOTER BAR ═══ -->
+                    <StackPanel Grid.Row="3" Margin="0,6,0,0">
+                        <Rectangle Height="1" Margin="0,0,0,5">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="Transparent" Offset="0"/>
+                                    <GradientStop Color="#22C55E" Offset="0.3"/>
+                                    <GradientStop Color="#22C55E" Offset="0.7"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontFamily="Consolas" FontSize="9" Foreground="#1A6B3A">
+                                <Run Text="ACCESS_LEVEL: "/>
+                                <Run Text="AUTHORIZED" Foreground="#4ADE80"/>
+                                <Run Text="  |  ENCRYPT: AES-256  |  HASH: SHA3-512"/>
+                            </TextBlock>
+                            <TextBlock Grid.Column="1" FontFamily="Consolas" FontSize="9" Foreground="#1A6B3A">
+                                <Run Text="© 2025 "/>
+                                <Run Text="SASIDHARAN M" Foreground="#4ADE80"/>
+                            </TextBlock>
+                        </Grid>
+                    </StackPanel>
+
+                </Grid><!-- /Main content grid -->
+
+                <!-- ═══ MOVING SCANLINES ═══ -->
+                <Rectangle Height="5" Opacity="0.28" IsHitTestVisible="False" VerticalAlignment="Top">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="Transparent" Offset="0"/>
+                            <GradientStop Color="#00FF7F" Offset="0.5"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform x:Name="scanlineTransform" Y="-6"/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+
+                <Rectangle Height="3" Opacity="0.15" IsHitTestVisible="False" VerticalAlignment="Top">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="Transparent" Offset="0"/>
+                            <GradientStop Color="#4ADE80" Offset="0.5"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform x:Name="scanline2Transform" Y="-6"/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+
+                <!-- ═══ FLICKER OVERLAY ═══ -->
+                <Rectangle x:Name="flickerOverlay" IsHitTestVisible="False" Opacity="0">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="#4ADE80"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+            </Grid>
+        </Border>
+    </Grid>
+</TabItem>
+                            <TabItem Header="about">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="8">
+                                    <StackPanel>
+                                        <TextBlock Text="📖 Project Description" FontSize="16" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,10"/>
+                                        <TextBlock Text="SOCBOX is a cybersecurity-based application designed to perform automated vulnerability scanning and security analysis on target systems or websites. The system integrates multiple security tools and techniques into a single platform, allowing users to identify potential threats, weaknesses, and misconfigurations efficiently." TextWrapping="Wrap" Foreground="#CBD5E1"/>
+                                        <TextBlock Text="The application provides a user-friendly interface where users can enter a target URL or IP address. SOCBOX then performs various scans such as network scanning, port analysis, and vulnerability detection. The results are analyzed and presented in a structured format, helping users understand security risks and take necessary actions." TextWrapping="Wrap" Foreground="#CBD5E1" Margin="0,8,0,0"/>
+                                        <TextBlock Text="This project aims to simplify complex security operations and make cybersecurity tools accessible through a unified system." TextWrapping="Wrap" Foreground="#CBD5E1" Margin="0,8,0,12"/>
+
+                                        <TextBlock Text="🎯 Objectives" FontSize="14" FontWeight="Bold" Foreground="#E2E8F0"/>
+                                        <TextBlock Text="• To develop an automated vulnerability scanning system" Margin="0,4,0,0"/>
+                                        <TextBlock Text="• To integrate multiple security tools into one platform"/>
+                                        <TextBlock Text="• To detect network and web-based vulnerabilities"/>
+                                        <TextBlock Text="• To provide clear and structured security reports"/>
+                                        <TextBlock Text="• To enhance cybersecurity awareness and analysis" Margin="0,0,0,12"/>
+
+                                        <TextBlock Text="⚙️ Key Features" FontSize="14" FontWeight="Bold" Foreground="#E2E8F0"/>
+                                        <TextBlock Text="🔍 Target-based scanning (URL / IP input)" Margin="0,4,0,0"/>
+                                        <TextBlock Text="🌐 Network scanning and port detection"/>
+                                        <TextBlock Text="🛡️ Vulnerability identification"/>
+                                        <TextBlock Text="📊 Detailed scan reports"/>
+                                        <TextBlock Text="⚡ Real-time scanning process"/>
+                                        <TextBlock Text="🧩 Integration of multiple security tools"/>
+                                        <TextBlock Text="🖥️ User-friendly GUI interface"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                        </TabControl>
+                    </Border>
+
+                    <Border Grid.Row="1" Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1" CornerRadius="10" Padding="10" Margin="0,10,0,0">
+                        <DockPanel>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                <Button Content="Save Settings" Background="#16A34A" Click="BtnSaveSettings_Click"/>
+                                <Button Content="Load Settings" Background="#0284C7" Click="BtnLoadSettings_Click"/>
+                                <Button Content="Reset to Defaults" Background="#EA580C" Click="BtnResetSettings_Click"/>
+                            </StackPanel>
+                            <TextBlock x:Name="txtSettingsStatus" DockPanel.Dock="Right" VerticalAlignment="Center" Foreground="#38BDF8" Text="Ready"/>
+                        </DockPanel>
+                    </Border>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -1,0 +1,14 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Neon Green -->
+    <SolidColorBrush x:Key="NeonGreenBrush" Color="#00ff9f"/>
+    <!-- Danger Red -->
+    <SolidColorBrush x:Key="DangerRedBrush" Color="#ff0033"/>
+    <!-- Backgrounds -->
+    <SolidColorBrush x:Key="MainBackgroundBrush" Color="#0a0a0a"/>
+    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#111111"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="#181818"/>
+    <!-- Text -->
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="#e0ffe0"/>
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#00ff9f"/>
+</ResourceDictionary>

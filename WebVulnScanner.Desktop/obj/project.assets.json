@@ -7010,40 +7010,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sasid\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\sasid\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\my final year projects\\vlun\\WebVulnScanner.Desktop\\WebVulnScanner.Desktop.csproj",
+      "projectUniqueName": "D:\\TTT\\Vlun_Finder\\WebVulnScanner.Desktop\\WebVulnScanner.Desktop.csproj",
       "projectName": "WebVulnScanner.Desktop",
-      "projectPath": "D:\\my final year projects\\vlun\\WebVulnScanner.Desktop\\WebVulnScanner.Desktop.csproj",
+      "projectPath": "D:\\TTT\\Vlun_Finder\\WebVulnScanner.Desktop\\WebVulnScanner.Desktop.csproj",
       "packagesPath": "C:\\Users\\sasid\\.nuget\\packages\\",
-      "outputPath": "D:\\my final year projects\\vlun\\WebVulnScanner.Desktop\\obj\\",
+      "outputPath": "D:\\TTT\\Vlun_Finder\\WebVulnScanner.Desktop\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\sasid\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\sasid\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0-windows"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "D:\\my final year projects\\vlun\\WebVulnScanner.Core\\WebVulnScanner.Core.csproj": {
-              "projectPath": "D:\\my final year projects\\vlun\\WebVulnScanner.Core\\WebVulnScanner.Core.csproj"
+            "D:\\TTT\\Vlun_Finder\\WebVulnScanner.Core\\WebVulnScanner.Core.csproj": {
+              "projectPath": "D:\\TTT\\Vlun_Finder\\WebVulnScanner.Core\\WebVulnScanner.Core.csproj"
             }
           }
         }
@@ -7074,6 +7066,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.25, 8.0.25]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.25, 8.0.25]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.25, 8.0.25]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.25, 8.0.25]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"

@@ -153,6 +153,22 @@ public class InterceptingProxyServer : IDisposable
         }
     }
 
+    public int ForwardAll()
+    {
+        var forwarded = 0;
+
+        foreach (var pending in _pendingRequests)
+        {
+            if (_pendingRequests.TryRemove(pending.Key, out var tcs))
+            {
+                tcs.TrySetResult("FORWARD");
+                forwarded++;
+            }
+        }
+
+        return forwarded;
+    }
+
     private Task OnCertValidation(object sender, CertificateValidationEventArgs e)
     {
         e.IsValid = true;

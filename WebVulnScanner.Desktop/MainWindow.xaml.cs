@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
+using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -24,6 +25,24 @@ namespace WebVulnScanner.Desktop;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
+    private const double BaseUiFontSize = 13.0;
+    private static readonly DependencyProperty BaseFontSizeProperty = DependencyProperty.RegisterAttached(
+        "BaseFontSize",
+        typeof(double),
+        typeof(MainWindow),
+        new PropertyMetadata(double.NaN));
+
+    private static readonly DependencyProperty BaseFontFamilyProperty = DependencyProperty.RegisterAttached(
+        "BaseFontFamily",
+        typeof(FontFamily),
+        typeof(MainWindow),
+        new PropertyMetadata(null));
+
+    private readonly string _settingsFilePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "WebVulnScanner",
+        "ui-settings.json");
+
     private InterceptingProxyServer? _proxyServer;
     private ProxyRequestEntry? _selectedRequest;
     private NetworkScanner? _netScanner;
@@ -59,8 +78,318 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         gridProxy.ItemsSource = _proxyRequests;
         InitNmapScannerTab();
         InitOpenVasTab();
+        SyncSettingsFormFromCurrentUi();
+        LoadApplicationSettings();
         LoadRecentScans();
         NotifyStatsChanged();
+    }
+
+    private void BtnSaveSettings_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var settings = ReadSettingsFromForm();
+            var directory = Path.GetDirectoryName(_settingsFilePath);
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(_settingsFilePath, json);
+
+            ApplySettingsToUi(settings);
+            txtSettingsStatus.Text = $"Saved: {_settingsFilePath}";
+        }
+        catch (Exception ex)
+        {
+            txtSettingsStatus.Text = $"Save failed: {ex.Message}";
+        }
+    }
+
+    private void BtnLoadSettings_Click(object sender, RoutedEventArgs e)
+    {
+        LoadApplicationSettings();
+    }
+
+    private void BtnResetSettings_Click(object sender, RoutedEventArgs e)
+    {
+        var defaults = new ApplicationUiSettings();
+        ApplySettingsToUi(defaults);
+        SyncSettingsFormFromCurrentUi();
+        txtSettingsStatus.Text = "Reset to defaults (not saved yet)";
+    }
+
+    private void LoadApplicationSettings()
+    {
+        try
+        {
+            if (!File.Exists(_settingsFilePath))
+            {
+                txtSettingsStatus.Text = "No saved settings file found";
+                return;
+            }
+
+            var json = File.ReadAllText(_settingsFilePath);
+            var settings = JsonSerializer.Deserialize<ApplicationUiSettings>(json) ?? new ApplicationUiSettings();
+
+            ApplySettingsToUi(settings);
+            SyncSettingsFormFromCurrentUi();
+            txtSettingsStatus.Text = "Loaded saved settings";
+        }
+        catch (Exception ex)
+        {
+            txtSettingsStatus.Text = $"Load failed: {ex.Message}";
+        }
+    }
+
+    private void SyncSettingsFormFromCurrentUi()
+    {
+        txtSetDefaultTargetUrl.Text = txtTarget.Text;
+        chkSetDefaultDeepScan.IsChecked = chkDeepScan.IsChecked == true;
+        txtSetProxyPort.Text = txtProxyPort.Text;
+        txtSetNmapTarget.Text = txtNmapTarget.Text;
+        txtSetNmapPorts.Text = txtNmapPorts.Text;
+        txtSetOvasHost.Text = txtOvasHost.Text;
+        txtSetOvasPort.Text = txtOvasPort.Text;
+        txtSetOvasUser.Text = txtOvasUser.Text;
+
+        if (cmbSetThemeMode.SelectedIndex < 0)
+        {
+            cmbSetThemeMode.SelectedIndex = 0;
+        }
+
+        if (cmbSetFontSize.SelectedIndex < 0)
+        {
+            cmbSetFontSize.SelectedIndex = 2;
+        }
+
+        if (cmbSetFontStyle.SelectedIndex < 0)
+        {
+            cmbSetFontStyle.SelectedIndex = 0;
+        }
+    }
+
+    private ApplicationUiSettings ReadSettingsFromForm()
+    {
+        var settings = new ApplicationUiSettings
+        {
+            DefaultTargetUrl = txtSetDefaultTargetUrl.Text.Trim(),
+            DeepScanByDefault = chkSetDefaultDeepScan.IsChecked == true,
+            DefaultProxyPort = int.TryParse(txtSetProxyPort.Text, out var proxyPort) ? proxyPort : 8080,
+            DefaultNmapTarget = txtSetNmapTarget.Text.Trim(),
+            DefaultNmapPorts = string.IsNullOrWhiteSpace(txtSetNmapPorts.Text) ? "1-1024" : txtSetNmapPorts.Text.Trim(),
+            DefaultOvasHost = txtSetOvasHost.Text.Trim(),
+            DefaultOvasPort = int.TryParse(txtSetOvasPort.Text, out var ovasPort) ? ovasPort : 9390,
+            DefaultOvasUser = string.IsNullOrWhiteSpace(txtSetOvasUser.Text) ? "admin" : txtSetOvasUser.Text.Trim(),
+            ThemeMode = GetComboText(cmbSetThemeMode, "System default"),
+            TextFontSize = double.TryParse(GetComboText(cmbSetFontSize, "13"), out var fontSize) ? fontSize : 13,
+            TextStyle = GetComboText(cmbSetFontStyle, "Default")
+        };
+
+        return settings;
+    }
+
+    private void ApplySettingsToUi(ApplicationUiSettings settings)
+    {
+        txtTarget.Text = settings.DefaultTargetUrl;
+        chkDeepScan.IsChecked = settings.DeepScanByDefault;
+        txtProxyPort.Text = settings.DefaultProxyPort.ToString();
+        txtNmapTarget.Text = settings.DefaultNmapTarget;
+        txtNmapPorts.Text = settings.DefaultNmapPorts;
+        txtOvasHost.Text = settings.DefaultOvasHost;
+        txtOvasPort.Text = settings.DefaultOvasPort.ToString();
+        txtOvasUser.Text = settings.DefaultOvasUser;
+
+        SetComboByText(cmbSetThemeMode, settings.ThemeMode, "System default");
+        SetComboByText(cmbSetFontSize, settings.TextFontSize.ToString("0"), "13");
+        SetComboByText(cmbSetFontStyle, settings.TextStyle, "Default");
+
+        ApplyAppearance(settings.ThemeMode, settings.TextFontSize, settings.TextStyle);
+
+        UpdateAdvNmapCommandPreview();
+    }
+
+    private void BtnApplyAppearance_Click(object sender, RoutedEventArgs e)
+    {
+        var settings = ReadSettingsFromForm();
+        ApplyAppearance(settings.ThemeMode, settings.TextFontSize, settings.TextStyle);
+        txtSettingsStatus.Text = "Appearance applied";
+    }
+
+    private void ApplyAppearance(string themeMode, double fontSize, string textStyle)
+    {
+        var mode = string.IsNullOrWhiteSpace(themeMode) ? "System default" : themeMode;
+        var resolvedDark = mode.Equals("Dark", StringComparison.OrdinalIgnoreCase)
+            || (mode.Equals("System default", StringComparison.OrdinalIgnoreCase) && IsSystemDarkTheme());
+
+        if (resolvedDark)
+        {
+            UpdateBrushColor("BrushBackground", "#0F172A");
+            UpdateBrushColor("BrushSurface", "#111827");
+            UpdateBrushColor("BrushSurfaceAlt", "#1F2937");
+            UpdateBrushColor("BrushBorder", "#334155");
+            UpdateBrushColor("BrushTextPrimary", "#F8FAFC");
+            UpdateBrushColor("BrushTextSecondary", "#E2E8F0");
+            UpdateBrushColor("BrushChromeBackground", "#0B1220");
+            UpdateBrushColor("BrushTabBackground", "#1F2937");
+            UpdateBrushColor("BrushTabSelectedBackground", "#0F172A");
+            UpdateBrushColor("BrushTabHoverBackground", "#334155");
+            UpdateBrushColor("BrushDataGridRow", "#0F1A2E");
+            UpdateBrushColor("BrushDataGridRowAlt", "#111F36");
+            UpdateBrushColor("BrushDataGridRowHover", "#1E3A5F");
+            UpdateBrushColor("BrushDataGridRowSelected", "#0EA5E9");
+            UpdateBrushColor("BrushDataGridGridlineH", "#243244");
+            UpdateBrushColor("BrushDataGridGridlineV", "#1B2533");
+        }
+        else
+        {
+            UpdateBrushColor("BrushBackground", "#F8FAFC");
+            UpdateBrushColor("BrushSurface", "#FFFFFF");
+            UpdateBrushColor("BrushSurfaceAlt", "#F1F5F9");
+            UpdateBrushColor("BrushBorder", "#CBD5E1");
+            UpdateBrushColor("BrushTextPrimary", "#0F172A");
+            UpdateBrushColor("BrushTextSecondary", "#334155");
+            UpdateBrushColor("BrushChromeBackground", "#E2E8F0");
+            UpdateBrushColor("BrushTabBackground", "#E2E8F0");
+            UpdateBrushColor("BrushTabSelectedBackground", "#FFFFFF");
+            UpdateBrushColor("BrushTabHoverBackground", "#CBD5E1");
+            UpdateBrushColor("BrushDataGridRow", "#FFFFFF");
+            UpdateBrushColor("BrushDataGridRowAlt", "#F8FAFC");
+            UpdateBrushColor("BrushDataGridRowHover", "#E2E8F0");
+            UpdateBrushColor("BrushDataGridRowSelected", "#93C5FD");
+            UpdateBrushColor("BrushDataGridGridlineH", "#CBD5E1");
+            UpdateBrushColor("BrushDataGridGridlineV", "#E2E8F0");
+        }
+
+        ApplyTypography(fontSize, textStyle);
+    }
+
+    private void ApplyTypography(double fontSize, string textStyle)
+    {
+        var clamped = Math.Clamp(fontSize, 10, 24);
+        var scale = clamped / BaseUiFontSize;
+        var useDefaultFamily = string.Equals(textStyle, "Default", StringComparison.OrdinalIgnoreCase);
+        var targetFamily = new FontFamily(MapFontStyleToFamily(textStyle));
+
+        ApplyTypographyRecursive(this, scale, targetFamily, useDefaultFamily);
+    }
+
+    private static void ApplyTypographyRecursive(DependencyObject node, double scale, FontFamily targetFamily, bool useDefaultFamily)
+    {
+        switch (node)
+        {
+            case Control control:
+                ApplyFontForElement(control, scale, targetFamily, useDefaultFamily, Control.FontSizeProperty, Control.FontFamilyProperty);
+                break;
+            case TextBlock textBlock:
+                ApplyFontForElement(textBlock, scale, targetFamily, useDefaultFamily, TextBlock.FontSizeProperty, TextBlock.FontFamilyProperty);
+                break;
+        }
+
+        var childCount = VisualTreeHelper.GetChildrenCount(node);
+        for (var i = 0; i < childCount; i++)
+        {
+            ApplyTypographyRecursive(VisualTreeHelper.GetChild(node, i), scale, targetFamily, useDefaultFamily);
+        }
+    }
+
+    private static void ApplyFontForElement(
+        DependencyObject element,
+        double scale,
+        FontFamily targetFamily,
+        bool useDefaultFamily,
+        DependencyProperty fontSizeProperty,
+        DependencyProperty fontFamilyProperty)
+    {
+        if (element.ReadLocalValue(BaseFontSizeProperty) == DependencyProperty.UnsetValue)
+        {
+            element.SetValue(BaseFontSizeProperty, (double)element.GetValue(fontSizeProperty));
+        }
+
+        if (element.ReadLocalValue(BaseFontFamilyProperty) == DependencyProperty.UnsetValue)
+        {
+            element.SetValue(BaseFontFamilyProperty, (FontFamily)element.GetValue(fontFamilyProperty));
+        }
+
+        var baseSize = (double)element.GetValue(BaseFontSizeProperty);
+        var baseFamily = (FontFamily)element.GetValue(BaseFontFamilyProperty);
+
+        var scaled = Math.Clamp(baseSize * scale, 8, 60);
+        element.SetCurrentValue(fontSizeProperty, scaled);
+        element.SetCurrentValue(fontFamilyProperty, useDefaultFamily ? baseFamily : targetFamily);
+    }
+
+    private static string GetComboText(ComboBox comboBox, string fallback)
+    {
+        if (comboBox.SelectedItem is ComboBoxItem selected && selected.Content is string selectedText)
+        {
+            return selectedText;
+        }
+
+        return fallback;
+    }
+
+    private static void SetComboByText(ComboBox comboBox, string text, string fallback)
+    {
+        var valueToFind = string.IsNullOrWhiteSpace(text) ? fallback : text;
+
+        foreach (var item in comboBox.Items)
+        {
+            if (item is ComboBoxItem comboItem && string.Equals(comboItem.Content?.ToString(), valueToFind, StringComparison.OrdinalIgnoreCase))
+            {
+                comboBox.SelectedItem = comboItem;
+                return;
+            }
+        }
+
+        foreach (var item in comboBox.Items)
+        {
+            if (item is ComboBoxItem comboItem && string.Equals(comboItem.Content?.ToString(), fallback, StringComparison.OrdinalIgnoreCase))
+            {
+                comboBox.SelectedItem = comboItem;
+                return;
+            }
+        }
+    }
+
+    private void UpdateBrushColor(string key, string hex)
+    {
+        if (Resources[key] is SolidColorBrush brush)
+        {
+            brush.Color = (Color)ColorConverter.ConvertFromString(hex);
+        }
+    }
+
+    private static bool IsSystemDarkTheme()
+    {
+        try
+        {
+            const string personalizeKey = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            using var key = Registry.CurrentUser.OpenSubKey(personalizeKey);
+            var value = key?.GetValue("AppsUseLightTheme");
+
+            if (value is int intValue)
+            {
+                return intValue == 0;
+            }
+        }
+        catch
+        {
+        }
+
+        return true;
+    }
+
+    private static string MapFontStyleToFamily(string textStyle)
+    {
+        return textStyle.ToLowerInvariant() switch
+        {
+            "classic" => "Georgia",
+            "modern" => "Bahnschrift",
+            "monospace" => "Consolas",
+            _ => "Segoe UI"
+        };
     }
 
     private void InitOpenVasTab()
@@ -109,7 +438,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
-        var target = string.IsNullOrWhiteSpace(txtAdvNmapTarget.Text) ? "127.0.0.1" : txtAdvNmapTarget.Text.Trim();
+        var target = string.IsNullOrWhiteSpace(txtAdvNmapTarget.Text) ? "<target>" : txtAdvNmapTarget.Text.Trim();
         var profile = cmbAdvNmapProfile.SelectedIndex;
 
         var args = profile switch
@@ -127,6 +456,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void BtnAdvNmapStart_Click(object sender, RoutedEventArgs e)
     {
+        if (string.IsNullOrWhiteSpace(txtAdvNmapTarget.Text))
+        {
+            MessageBox.Show("Enter a target host before starting the scan.", "Nmap", MessageBoxButton.OK, MessageBoxImage.Information);
+            txtAdvNmapTarget.Focus();
+            return;
+        }
+
         if (!NmapRunner.IsNmapInstalled())
         {
             MessageBox.Show("Nmap is not installed. Download from https://nmap.org/download.html", "Nmap", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -525,6 +861,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         _proxyServer.Forward(_selectedRequest.Id, txtRequestEditor.Text);
         txtProxyStatus.Text = "Request forwarded";
+    }
+
+    private void BtnForwardAll_Click(object sender, RoutedEventArgs e)
+    {
+        if (_proxyServer == null)
+        {
+            txtProxyStatus.Text = "Proxy is not running";
+            return;
+        }
+
+        var forwardedCount = _proxyServer.ForwardAll();
+        txtProxyStatus.Text = forwardedCount > 0
+            ? $"Forwarded {forwardedCount} pending request(s)"
+            : "No pending intercepted requests";
     }
 
     private void BtnDrop_Click(object sender, RoutedEventArgs e)
@@ -1285,4 +1635,19 @@ public class NmapPortViewModel
     public string Version { get; set; } = string.Empty;
     public string RiskLevel { get; set; } = "Info";
     public string Description { get; set; } = string.Empty;
+}
+
+public class ApplicationUiSettings
+{
+    public string DefaultTargetUrl { get; set; } = string.Empty;
+    public bool DeepScanByDefault { get; set; }
+    public int DefaultProxyPort { get; set; } = 8080;
+    public string DefaultNmapTarget { get; set; } = string.Empty;
+    public string DefaultNmapPorts { get; set; } = "1-1024";
+    public string DefaultOvasHost { get; set; } = string.Empty;
+    public int DefaultOvasPort { get; set; } = 9390;
+    public string DefaultOvasUser { get; set; } = "admin";
+    public string ThemeMode { get; set; } = "System default";
+    public double TextFontSize { get; set; } = 13;
+    public string TextStyle { get; set; } = "Default";
 }

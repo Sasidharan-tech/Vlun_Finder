@@ -1,0 +1,25 @@
+<UserControl x:Class="SOCBOX.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource MainBackgroundBrush}">
+    <Grid Margin="32">
+        <StackPanel>
+            <TextBlock Text="Settings" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource NeonGreenBrush}" Margin="0,0,0,16"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                <TextBlock Text="Notifications" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" Margin="0,0,8,0"/>
+                <ToggleButton Width="60" Height="28"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                <TextBlock Text="Theme: " Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" Margin="0,0,8,0"/>
+                <ComboBox Width="120" Height="28">
+                    <ComboBoxItem Content="Hacker"/>
+                    <ComboBoxItem Content="Classic"/>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                <TextBlock Text="API Endpoint" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" Margin="0,0,8,0"/>
+                <TextBox Width="260" Height="28"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

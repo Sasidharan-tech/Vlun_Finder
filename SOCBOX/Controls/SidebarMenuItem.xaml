@@ -1,0 +1,11 @@
+<UserControl x:Class="SOCBOX.Controls.SidebarMenuItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="48" Width="160">
+    <Border x:Name="RootBorder" Background="Transparent" CornerRadius="8" Padding="8" Cursor="Hand">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <Image x:Name="Icon" Width="24" Height="24" Margin="0,0,8,0"/>
+            <TextBlock x:Name="MenuText" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource NeonGreenBrush}" FontSize="16"/>
+        </StackPanel>
+    </Border>
+</UserControl>

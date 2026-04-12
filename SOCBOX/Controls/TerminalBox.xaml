@@ -1,0 +1,11 @@
+<UserControl x:Class="SOCBOX.Controls.TerminalBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#000">
+    <Grid>
+        <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto">
+            <TextBlock x:Name="TerminalText" Foreground="#00ff9f" FontFamily="Consolas" FontSize="13"/>
+        </ScrollViewer>
+        <TextBlock x:Name="Cursor" Text="_" Foreground="#00ff9f" FontFamily="Consolas" FontSize="13" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="4"/>
+    </Grid>
+</UserControl>

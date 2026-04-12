@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/F0fadVxZSw=",
+  "dgSpecHash": "1rfNzx85SK8=",
   "success": true,
-  "projectFilePath": "D:\\my final year projects\\vlun\\WebVulnScanner.Desktop\\WebVulnScanner.Desktop.csproj",
+  "projectFilePath": "D:\\TTT\\Vlun_Finder\\WebVulnScanner.Desktop\\WebVulnScanner.Desktop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\sasid\\.nuget\\packages\\bouncycastle.cryptography\\2.0.0\\bouncycastle.cryptography.2.0.0.nupkg.sha512",
     "C:\\Users\\sasid\\.nuget\\packages\\brotlisharplib\\0.3.3\\brotlisharplib.0.3.3.nupkg.sha512",
@@ -124,7 +124,11 @@
     "C:\\Users\\sasid\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\sasid\\.nuget\\packages\\system.xml.readerwriter\\4.3.1\\system.xml.readerwriter.4.3.1.nupkg.sha512",
     "C:\\Users\\sasid\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
-    "C:\\Users\\sasid\\.nuget\\packages\\titanium.web.proxy\\3.2.2-beta\\titanium.web.proxy.3.2.2-beta.nupkg.sha512"
+    "C:\\Users\\sasid\\.nuget\\packages\\titanium.web.proxy\\3.2.2-beta\\titanium.web.proxy.3.2.2-beta.nupkg.sha512",
+    "C:\\Users\\sasid\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.25\\microsoft.netcore.app.ref.8.0.25.nupkg.sha512",
+    "C:\\Users\\sasid\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.25\\microsoft.windowsdesktop.app.ref.8.0.25.nupkg.sha512",
+    "C:\\Users\\sasid\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.25\\microsoft.aspnetcore.app.ref.8.0.25.nupkg.sha512",
+    "C:\\Users\\sasid\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.25\\microsoft.netcore.app.host.win-x64.8.0.25.nupkg.sha512"
   ],
   "logs": []
 }
