@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebVulnScanner.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2a07701a3af36acaaec2ae273f62b2ab4da610e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f526a08099b7c9c18ff4f2f30fb8c30d167cf8c")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebVulnScanner.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebVulnScanner.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

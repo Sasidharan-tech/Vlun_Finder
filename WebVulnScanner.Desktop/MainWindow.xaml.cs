@@ -1294,6 +1294,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void BtnOvasTestConn_Click(object sender, RoutedEventArgs e)
     {
+        var host = txtOvasHost.Text.Trim();
+        if (string.IsNullOrWhiteSpace(host))
+        {
+            ovasConnStatus.Text = "Enter OpenVAS host";
+            MessageBox.Show(
+                "OpenVAS host cannot be empty. Enter localhost or the server IP/hostname first.",
+                "OpenVAS",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            txtOvasHost.Focus();
+            return;
+        }
+
         ovasConnStatus.Text = "Testing...";
         ovasConnBadge.Background = new SolidColorBrush(Color.FromRgb(30, 41, 59));
         ovasConnBadge.BorderBrush = null;
@@ -1323,6 +1336,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void BtnOvasScan_Click(object sender, RoutedEventArgs e)
     {
+        var host = txtOvasHost.Text.Trim();
+        if (string.IsNullOrWhiteSpace(host))
+        {
+            txtOvasStatus.Text = "Enter OpenVAS host first";
+            MessageBox.Show(
+                "OpenVAS host cannot be empty. Enter localhost or the server IP/hostname first.",
+                "OpenVAS",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            txtOvasHost.Focus();
+            return;
+        }
+
         _ovasResults.Clear();
         ovasCritCount.Text = ovasHighCount.Text = ovasMedCount.Text = ovasLowCount.Text = ovasTotalCount.Text = "0";
         ovasEmptyPanel.Visibility = Visibility.Visible;
